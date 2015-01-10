@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+// The Maven plugin is only required if your package is used as a library.
+apply plugin: 'maven'
+
+version = '0.0.0-SNAPSHOT'
+group = 'xbmc.jsonrpc'
+
+defaultTasks 'build'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.codehaus.jackson:jackson-mapper-asl:1.8.8'
+	compile 'org.codehaus.jackson:jackson-core-asl:1.8.8'
+}
