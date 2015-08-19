@@ -1,3 +1,11 @@
+/**
+ * This file is part of the Alfred package.
+ *
+ * (c) Mickael Gaillard <mick.gaillard@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 package com.alfred.ros.xbmc.internal;
 
 import java.util.List;
@@ -28,11 +36,13 @@ import com.google.common.base.Strings;
 /**
  * Xbmc Player module.
  *
+ * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
+ *
  */
 public class XbmcPlayer implements IPlayer {
     private static final String XBMC_PLUGIN_YOUTUBE_URL =
             "plugin://plugin.video.youtube/?action=play_video&videoid=%s";
-    
+
     /**
      * Xbmc node.
      */
@@ -327,7 +337,7 @@ public class XbmcPlayer implements IPlayer {
         if (!Strings.isNullOrEmpty(uri)) {
             if (uri.startsWith(IPlayer.URI_MEDIA_IMDB)) {
                 //Get mediaid from database with imdbid
-                
+
             } else if (uri.startsWith(IPlayer.URI_MEDIA_YOUTUBE)) {
                 item = new PlaylistModel.Item(
                         new PlaylistModel.Item.File(String.format(

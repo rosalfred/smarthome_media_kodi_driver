@@ -1,3 +1,11 @@
+/**
+ * This file is part of the Alfred package.
+ *
+ * (c) Mickael Gaillard <mick.gaillard@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 package com.alfred.ros.xbmc.jsonrpc;
 
 import java.util.List;
@@ -9,6 +17,8 @@ import org.xbmc.android.jsonrpc.io.JsonApiRequest;
 
 /**
  * Xbmc json-rpc utils.
+ *
+ * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
 public class XbmcJson {
@@ -24,9 +34,9 @@ public class XbmcJson {
 	 * Password of xbmc server.
 	 */
 	private String password;
-	
+
 	/**
-	 * 
+	 *
 	 * @param url Url of xbmc server.
 	 * @param user User of xbmc server.
 	 * @param password Password of xbmc server.
@@ -36,7 +46,7 @@ public class XbmcJson {
 		this.user = user;
 		this.password = password;
 	}
-	
+
 	/**
 	 * Call xbmc json-rpc and return single result.
 	 * @param caller
@@ -44,13 +54,13 @@ public class XbmcJson {
 	 */
 	public <T> T getResult(AbstractCall<T> caller) {
 		T result = null;
-		
+
 		this.executeCall(caller);
 		result = caller.getResult();
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Call xbmc json-rpc and return list.
 	 * @param caller
@@ -58,13 +68,13 @@ public class XbmcJson {
 	 */
 	public <T> List<T> getResults(AbstractCall<T> caller) {
 		List<T> result = null;
-		
+
 		this.executeCall(caller);
 		result = caller.getResults();
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Execute call to xbmc server.
 	 * @param caller
@@ -76,7 +86,7 @@ public class XbmcJson {
 					this.user,
 					this.password,
 					caller.getRequest());
-			
+
 			caller.setResponse(object);
 		} catch (ApiException e) {
 

@@ -1,3 +1,11 @@
+/**
+ * This file is part of the Alfred package.
+ *
+ * (c) Mickael Gaillard <mick.gaillard@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 package com.alfred.ros.xbmc;
 
 import media_msgs.MediaGetItem;
@@ -30,8 +38,11 @@ import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
 
 /**
  * Xbmc ROS Node.
+ *
+ * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
+ *
  */
-public class XbmcNode 
+public class XbmcNode
         extends BaseMediaNodeMain
         implements ReconfigureListener<XbmcConfig> {
 
@@ -81,21 +92,21 @@ public class XbmcNode
                 .getString("~user", "xbmc");
         this.password = this.connectedNode.getParameterTree()
                 .getString("~password", "xbmc");
-        
+
         this.logI(
-                String.format("rate : %s\nprefix : %s\nfixedFrame : %s\nip : %s\nmac : %s\nport : %s\nuser : %s\npassword : %s", 
-                        this.rate, 
-                        this.prefix, 
-                        this.fixedFrame, 
-                        this.host, 
-                        this.mac, 
-                        this.port, 
-                        this.user, 
+                String.format("rate : %s\nprefix : %s\nfixedFrame : %s\nip : %s\nmac : %s\nport : %s\nuser : %s\npassword : %s",
+                        this.rate,
+                        this.prefix,
+                        this.fixedFrame,
+                        this.host,
+                        this.mac,
+                        this.port,
+                        this.user,
                         this.password));
 
         this.serverReconfig = new Server<XbmcConfig>(
-                this.connectedNode, 
-                new XbmcConfig(this.connectedNode), 
+                this.connectedNode,
+                new XbmcConfig(this.connectedNode),
                 this);
     }
 
@@ -119,7 +130,7 @@ public class XbmcNode
     @Override
     protected void initServices() {
         super.initServices();
-        
+
         this.connectedNode.newServiceServer(
                 this.prefix + SRV_MUTE_SPEAKER_TOGGLE,
                 ToggleMuteSpeaker._TYPE,
@@ -204,7 +215,7 @@ public class XbmcNode
     public StateData getStateData() {
         return this.stateData;
     }
-    
+
     public ConnectedNode getNode() {
         return this.connectedNode;
     }

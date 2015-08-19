@@ -1,3 +1,11 @@
+/**
+ * This file is part of the Alfred package.
+ *
+ * (c) Mickael Gaillard <mick.gaillard@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 package com.alfred.ros.xbmc.internal;
 
 import java.util.ArrayList;
@@ -54,13 +62,15 @@ import media_msgs.MediaType;
 /**
  * Xbmc Libray Module.
  *
+ * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
+ *
  */
 public class XbmcLibrary implements ILibrary {
 	/**
 	 * Xbmc node.
 	 */
 	private XbmcNode xbmcNode;
-	
+
 	/**
 	 * Xbmc json-rpc.
 	 */
@@ -84,11 +94,11 @@ public class XbmcLibrary implements ILibrary {
 
 		int mediaId = request.getItem().getMediaid();
 		MediaType mediaType = request.getItem().getMediatype();
-		
+
 		if (Strings.isNullOrEmpty(mediaType.getValue())) {
 		    mediaType = this.xbmcNode.getStateData().getPlayer().getMediatype();
 		}
-		
+
 		Media media = null;
 
 		if (mediaId < 0) {
@@ -109,14 +119,14 @@ public class XbmcLibrary implements ILibrary {
 			//We need to send default message.
 			media = new Media();
 		}
-		
+
 		MediaItem result = this.xbmcNode.getNode().getTopicMessageFactory()
                 .newFromType(MediaItem._TYPE);
-		
+
 		result.setMediaid(media.getMediaid());
 		result.setMediatype(mediaType);
 		result.setData(media.toJson());
-		
+
 		response.setItem(result);
 	}
 
@@ -150,22 +160,22 @@ public class XbmcLibrary implements ILibrary {
 		    Album media = Album.fromJson(request.getItem().getData());
             medias = this.getAudioAlbums(media, null);
         }
-		
+
 		if (medias == null) {
 			//We need to send default message.
 			medias = new ArrayList<Media>();
 		}
-		
+
 		List<MediaItem> result = new ArrayList<MediaItem>();
-		
+
 		for (Media media : medias) {
             MediaItem item = this.xbmcNode.getNode().getTopicMessageFactory()
                     .newFromType(MediaItem._TYPE);
-            
+
             item.setMediaid(media.getMediaid());
             item.setMediatype(mediaType);
             item.setData(media.toJson());
-            
+
             result.add(item);
         }
 
@@ -207,7 +217,7 @@ public class XbmcLibrary implements ILibrary {
 
 		return result;
 	}
-	
+
 	/**
      * Get song from xbmc json-rpc.
      * @param mediaId Id of the song to find
@@ -225,7 +235,7 @@ public class XbmcLibrary implements ILibrary {
 
         return result;
     }
-    
+
     /**
      * Get album from xbmc json-rpc.
      * @param mediaId Id of the album to find
@@ -273,14 +283,14 @@ public class XbmcLibrary implements ILibrary {
 		            String.valueOf(item.getMediaid()),
 		            "movieid"));
 		}
-		
+
 		if (item.getYear() > 0) {
 		    filters.add(this.getMovieFilter(
 		            FilterRule.Operator.IS,
 		            String.valueOf(item.getYear()),
 		            MovieFilterRule.Field.YEAR));
 		}
-		
+
 		if (item.getCast() != null && !item.getCast().isEmpty()) {
 		    for (String actor : item.getCast()) {
                 if (!Strings.isNullOrEmpty(actor)) {
@@ -310,7 +320,7 @@ public class XbmcLibrary implements ILibrary {
 
 		return result;
 	}
-	
+
 	private MovieFilter getMovieFilter(String operator, String value, String field) {
 	    return new MovieFilter(new MovieFilterRule(
 	            operator,
@@ -413,7 +423,7 @@ public class XbmcLibrary implements ILibrary {
 
 		return result;
 	}
-	
+
 	/**
      * Get songs from xbmc json-rpc.
      * @param item {@link Media} with value for filtering
@@ -429,7 +439,7 @@ public class XbmcLibrary implements ILibrary {
 
         if (!Strings.isNullOrEmpty(showtitle)) {
             String[] titleParts = showtitle.split(" ");
-            
+
             for (String part : titleParts) {
                 filters.add(new SongFilter(new SongFilterRule("contains",
                         new Value(part), "title")));
@@ -444,7 +454,7 @@ public class XbmcLibrary implements ILibrary {
         if (!filters.isEmpty()) {
             filter = new SongFilter(new SongFilter.And(filters));
         }
-        
+
         String[] properties = this.getAudioSongProperties();
         List<SongDetail> items = this.xbmcJson.getResults(new AudioLibrary.GetSongs(
                 limits, filter, properties));
@@ -457,7 +467,7 @@ public class XbmcLibrary implements ILibrary {
 
         return result;
     }
-    
+
     /**
      * Get albums from xbmc json-rpc.
      * @param item {@link Media} with value for filtering
@@ -473,7 +483,7 @@ public class XbmcLibrary implements ILibrary {
 
         if (!Strings.isNullOrEmpty(showtitle)) {
             String[] titleParts = showtitle.split(" ");
-            
+
             for (String part : titleParts) {
                 filters.add(new AlbumFilter(new AlbumFilterRule("contains",
                         new Value(part), "album")));
@@ -503,7 +513,7 @@ public class XbmcLibrary implements ILibrary {
     }
 
 	/**
-	 * 
+	 *
 	 * @return List of basic media item properties
 	 */
 	private String[] getItemProperties() {
@@ -514,9 +524,9 @@ public class XbmcLibrary implements ILibrary {
 
 		return properties;
 	}
-	
+
 	/**
-     * 
+     *
      * @return List of basic media audio item properties
      */
     private String[] getAudioItemProperties() {
@@ -524,7 +534,7 @@ public class XbmcLibrary implements ILibrary {
 //                "playcount", "runtime", "director", "originaltitle", "cast",
 //                "streamdetails", "lastplayed", "fanart", "thumbnail", "file",
 //                "resume", "dateadded"/*, "art"*/ };
-        
+
         String[] properties = { "genre", "artist", "artistid", "displayartist",
                 "genreid", "musicbrainzalbumartistid", "musicbrainzalbumid",
                 "rating", "title", "year", "fanart", "thumbnail",
@@ -534,7 +544,7 @@ public class XbmcLibrary implements ILibrary {
     }
 
 	/**
-	 * 
+	 *
 	 * @return List of movie item properties
 	 */
 	private String[] getMovieProperties() {
@@ -547,7 +557,7 @@ public class XbmcLibrary implements ILibrary {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return List of tvshow item properties
 	 */
 	private String[] getTvshowProperties() {
@@ -560,7 +570,7 @@ public class XbmcLibrary implements ILibrary {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return List of episode tvshow item properties
 	 */
 	private String[] getTvshowEpisodeProperties() {
@@ -570,9 +580,9 @@ public class XbmcLibrary implements ILibrary {
 		return ObjectArrays.concat(this.getItemProperties(), properties,
 				String.class);
 	}
-	
+
 	/**
-     * 
+     *
      * @return List of song item properties
      */
     private String[] getAudioSongProperties() {
@@ -584,15 +594,15 @@ public class XbmcLibrary implements ILibrary {
         return ObjectArrays.concat(this.getAudioItemProperties(), properties,
                 String.class);
     }
-    
+
     /**
-     * 
+     *
      * @return List of album item properties
      */
     private String[] getAudioAlbumProperties() {
         String[] properties =  { "description", "mood", "style",
               "theme", "type"};
-        
+
         return ObjectArrays.concat(this.getAudioItemProperties(), properties,
                 String.class);
     }
@@ -716,7 +726,7 @@ public class XbmcLibrary implements ILibrary {
 
 		return tvshow;
 	}
-	
+
 	/**
      * Convert {@link SongDetail} to {@link Media}.
      * @param media {@link SongDetail} rpc
@@ -757,7 +767,7 @@ public class XbmcLibrary implements ILibrary {
             song.setTrack(media.track);
             song.setYear(media.year);
             song.setRating(media.rating);
-            
+
 //            video.getTvshow().setEpisode(media.episode);
 //            video.getTvshow().setSeason(media.season);
 //            video.getTvshow().setTvshowid(media.tvshowid);
@@ -772,7 +782,7 @@ public class XbmcLibrary implements ILibrary {
 
         return song;
     }
-    
+
     /**
      * Convert {@link AlbumDetail} to {@link Media}.
      * @param media {@link AlbumDetail} rpc
@@ -811,7 +821,7 @@ public class XbmcLibrary implements ILibrary {
             album.setRating(media.rating);
             album.setYear(media.year);
             album.setRating(media.rating);
-            
+
 //            video.getTvshow().setEpisode(media.episode);
 //            video.getTvshow().setSeason(media.season);
 //            video.getTvshow().setTvshowid(media.tvshowid);
