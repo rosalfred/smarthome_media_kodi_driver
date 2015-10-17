@@ -40,7 +40,7 @@ import org.xbmc.android.jsonrpc.api.model.VideoModel.MovieDetail;
 import org.xbmc.android.jsonrpc.api.model.VideoModel.TVShowDetail;
 
 import com.alfred.ros.media.ILibrary;
-import com.alfred.ros.xbmc.XbmcNode;
+import com.alfred.ros.xbmc.IXbmcNode;
 import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
 import com.google.common.base.Strings;
 import com.google.common.collect.ObjectArrays;
@@ -50,14 +50,13 @@ import media_msgs.MediaGetItemResponse;
 import media_msgs.MediaGetItemsRequest;
 import media_msgs.MediaGetItemsResponse;
 import media_msgs.MediaItem;
+import media_msgs.MediaType;
 
 import com.alfred.ros.media.model.Album;
 import com.alfred.ros.media.model.Media;
 import com.alfred.ros.media.model.Movie;
 import com.alfred.ros.media.model.Song;
 import com.alfred.ros.media.model.Tvshow;
-
-import media_msgs.MediaType;
 
 /**
  * Xbmc Libray Module.
@@ -69,7 +68,7 @@ public class XbmcLibrary implements ILibrary {
 	/**
 	 * Xbmc node.
 	 */
-	private XbmcNode xbmcNode;
+	private IXbmcNode xbmcNode;
 
 	/**
 	 * Xbmc json-rpc.
@@ -81,7 +80,7 @@ public class XbmcLibrary implements ILibrary {
 	 * @param xbmcJson {@link XbmcJson} xbmc json-rpc
 	 * @param xbmcNode {@link XbmcNode} xbmc node
 	 */
-	public XbmcLibrary(XbmcJson xbmcJson, XbmcNode node) {
+	public XbmcLibrary(XbmcJson xbmcJson, IXbmcNode node) {
 		this.xbmcJson = xbmcJson;
 		this.xbmcNode = node;
 	}
@@ -89,8 +88,7 @@ public class XbmcLibrary implements ILibrary {
 	@Override
 	public void handleMediaGetItem(MediaGetItemRequest request,
 			MediaGetItemResponse response) {
-		this.xbmcNode.logI(
-				String.format("Service call %s", XbmcNode.SRV_MEDIA_GET_ITEM));
+		this.xbmcNode.logI("Service call MediaGetItem");
 
 		int mediaId = request.getItem().getMediaid();
 		MediaType mediaType = request.getItem().getMediatype();
@@ -120,8 +118,7 @@ public class XbmcLibrary implements ILibrary {
 			media = new Media();
 		}
 
-		MediaItem result = this.xbmcNode.getNode().getTopicMessageFactory()
-                .newFromType(MediaItem._TYPE);
+		MediaItem result = this.xbmcNode.getNewMessageInstance(MediaItem._TYPE);
 
 		result.setMediaid(media.getMediaid());
 		result.setMediatype(mediaType);
@@ -133,8 +130,7 @@ public class XbmcLibrary implements ILibrary {
 	@Override
 	public void handleMediaGetItems(MediaGetItemsRequest request,
 			MediaGetItemsResponse response) {
-		this.xbmcNode.logI(
-				String.format("Service call %s", XbmcNode.SRV_MEDIA_GET_ITEMS));
+		this.xbmcNode.logI("Service call MediaGetItems");
 
 		int mediaId = request.getItem().getMediaid();
 		MediaType mediaType = request.getItem().getMediatype();
@@ -169,8 +165,7 @@ public class XbmcLibrary implements ILibrary {
 		List<MediaItem> result = new ArrayList<MediaItem>();
 
 		for (Media media : medias) {
-            MediaItem item = this.xbmcNode.getNode().getTopicMessageFactory()
-                    .newFromType(MediaItem._TYPE);
+            MediaItem item = this.xbmcNode.getNewMessageInstance(MediaItem._TYPE);
 
             item.setMediaid(media.getMediaid());
             item.setMediatype(mediaType);

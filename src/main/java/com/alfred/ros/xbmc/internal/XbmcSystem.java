@@ -13,7 +13,7 @@ import media_msgs.StateData;
 
 import org.xbmc.android.jsonrpc.api.call.System;
 
-import com.alfred.ros.media.ISystem;
+import com.alfred.ros.core.ISystem;
 import com.alfred.ros.xbmc.XbmcNode;
 import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
 
@@ -24,7 +24,7 @@ import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class XbmcSystem implements ISystem {
+public class XbmcSystem implements ISystem<StateData, MediaAction> {
     /**
      * Xbmc node.
      */

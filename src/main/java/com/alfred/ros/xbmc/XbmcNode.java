@@ -8,6 +8,7 @@
  */
 package com.alfred.ros.xbmc;
 
+import media_msgs.MediaAction;
 import media_msgs.MediaGetItem;
 import media_msgs.MediaGetItemRequest;
 import media_msgs.MediaGetItemResponse;
@@ -19,8 +20,6 @@ import media_msgs.ToggleMuteSpeaker;
 import media_msgs.ToggleMuteSpeakerRequest;
 import media_msgs.ToggleMuteSpeakerResponse;
 
-import org.ros.dynamic_reconfigure.server.Server;
-import org.ros.dynamic_reconfigure.server.Server.ReconfigureListener;
 import org.ros.exception.ServiceException;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
@@ -28,7 +27,9 @@ import org.ros.node.service.ServiceResponseBuilder;
 import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
 import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
-import com.alfred.ros.media.BaseMediaNodeMain;
+import com.alfred.ros.core.BaseNodeMain;
+import com.alfred.ros.media.MediaMessageConverter;
+import com.alfred.ros.media.MediaStateDataComparator;
 import com.alfred.ros.xbmc.internal.XbmcLibrary;
 import com.alfred.ros.xbmc.internal.XbmcMonitor;
 import com.alfred.ros.xbmc.internal.XbmcPlayer;
@@ -42,9 +43,7 @@ import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class XbmcNode
-        extends BaseMediaNodeMain
-        implements ReconfigureListener<XbmcConfig> {
+public class XbmcNode extends BaseNodeMain<XbmcConfig, StateData, MediaAction> implements IXbmcNode {
 
     public static final String SRV_MUTE_SPEAKER_TOGGLE = "speaker_mute_toggle";
     public static final String SRV_MEDIA_GET_ITEM = "get_item";
@@ -52,8 +51,15 @@ public class XbmcNode
 
     private XbmcJson xbmcJson;
 
-    static {
-        nodeName = "xbmc";
+    private XbmcLibrary library;
+    private XbmcSpeaker speaker;
+
+    public XbmcNode() {
+        super("xbmc",
+                new MediaStateDataComparator(),
+                new MediaMessageConverter(),
+                MediaAction._TYPE,
+                StateData._TYPE);
     }
 
     @Override
@@ -68,46 +74,24 @@ public class XbmcNode
     }
 
     @Override
-    protected void loadParameters() {
-        this.logI("Load parameters.");
+    protected void onConnected() {
+        this.getStateData().setState(StateData.ENABLE);
+    }
 
-        this.prefix = String.format("/%s/", this.connectedNode.getParameterTree()
-                .getString("~tf_prefix", "home/salon/xbmc"));
-        this.fixedFrame = this.connectedNode.getParameterTree()
-                .getString("~fixed_frame", "fixed_frame");
-        this.rate = this.connectedNode.getParameterTree()
-                .getInteger("~" + XbmcConfig.RATE, 1);
+    @Override
+    protected void onDisconnected() {
+        this.getStateData().setState(StateData.UNKNOWN);
+    }
 
-        if (this.rate <= 0) {
-            this.rate = 1;
+    @Override
+    public void onNewMessage(MediaAction message) {
+        if (message != null) {
+            this.logI(String.format("Command \"%s\"... for %s",
+                    message.getMethod(),
+                    message.getUri()));
+
+            super.onNewMessage(message);
         }
-
-        this.mac = this.connectedNode.getParameterTree()
-                .getString("~mac", "00:01:2E:BC:16:33");
-        this.host = this.connectedNode.getParameterTree()
-                .getString("~ip", "192.168.0.38");
-        this.port = this.connectedNode.getParameterTree()
-                .getInteger("~port", 8080);
-        this.user = this.connectedNode.getParameterTree()
-                .getString("~user", "xbmc");
-        this.password = this.connectedNode.getParameterTree()
-                .getString("~password", "xbmc");
-
-        this.logI(
-                String.format("rate : %s\nprefix : %s\nfixedFrame : %s\nip : %s\nmac : %s\nport : %s\nuser : %s\npassword : %s",
-                        this.rate,
-                        this.prefix,
-                        this.fixedFrame,
-                        this.host,
-                        this.mac,
-                        this.port,
-                        this.user,
-                        this.password));
-
-        this.serverReconfig = new Server<XbmcConfig>(
-                this.connectedNode,
-                new XbmcConfig(this.connectedNode),
-                this);
     }
 
     @Override
@@ -115,24 +99,27 @@ public class XbmcNode
         super.initialize();
 
         String url = String.format("http://%s:%d/jsonrpc",
-                this.host,
-                this.port);
+                this.configuration.getHost(),
+                this.configuration.getPort());
 
-        this.xbmcJson = new XbmcJson(url, this.user, this.password);
+        this.xbmcJson = new XbmcJson(
+                url, this.configuration.getUser(), this.configuration.getPassword());
 
-        this.monitor = new XbmcMonitor();
-        this.player = new XbmcPlayer(this.xbmcJson, this);
-        this.speaker = new XbmcSpeaker(this.xbmcJson, this);
-        this.system = new XbmcSystem(this.xbmcJson, this);
         this.library = new XbmcLibrary(this.xbmcJson, this);
+        this.speaker = new XbmcSpeaker(this.xbmcJson, this);
+
+        this.addModule(new XbmcMonitor());
+        this.addModule(new XbmcPlayer(this.xbmcJson, this));
+        this.addModule(new XbmcSystem(this.xbmcJson, this));
+        this.addModule(this.speaker);
     }
 
     @Override
     protected void initServices() {
         super.initServices();
 
-        this.connectedNode.newServiceServer(
-                this.prefix + SRV_MUTE_SPEAKER_TOGGLE,
+        this.getConnectedNode().newServiceServer(
+                this.configuration.getPrefix() + SRV_MUTE_SPEAKER_TOGGLE,
                 ToggleMuteSpeaker._TYPE,
                 new ServiceResponseBuilder<ToggleMuteSpeakerRequest, ToggleMuteSpeakerResponse>() {
                     @Override
@@ -142,8 +129,8 @@ public class XbmcNode
                     }
                 });
 
-        this.connectedNode.newServiceServer(
-                this.prefix + SRV_MEDIA_GET_ITEM,
+        this.getConnectedNode().newServiceServer(
+                this.configuration.getPrefix() + SRV_MEDIA_GET_ITEM,
                 MediaGetItem._TYPE,
                 new ServiceResponseBuilder<MediaGetItemRequest, MediaGetItemResponse>() {
                     @Override
@@ -153,8 +140,8 @@ public class XbmcNode
                     }
                 });
 
-        this.connectedNode.newServiceServer(
-                this.prefix + SRV_MEDIA_GET_ITEMS,
+        this.getConnectedNode().newServiceServer(
+                this.configuration.getPrefix() + SRV_MEDIA_GET_ITEMS,
                 MediaGetItems._TYPE,
                 new ServiceResponseBuilder<MediaGetItemsRequest, MediaGetItemsResponse>() {
                     @Override
@@ -166,13 +153,17 @@ public class XbmcNode
     }
 
     @Override
-    protected void connect() {
-        this.logI(String.format("Connecting to %s:%s...", this.host, this.port));
+    protected boolean connect() {
+        boolean result = false;
+
+        this.logI(String.format("Connecting to %s:%s...",
+                this.configuration.getHost(),
+                this.configuration.getPort()));
 
         if (this.pingXbmc()) {
-            this.stateData.setState(StateData.INIT);
+            this.getStateData().setState(StateData.INIT);
 
-            this.isConnected = true;
+            result = true;
             Version.VersionResult version = this.xbmcJson.getResult(new Version());
 
             if (version.major >= 6) {
@@ -191,32 +182,25 @@ public class XbmcNode
 
             this.logI("\tConnected done.");
         } else {
-            this.stateData.setState(StateData.SHUTDOWN);
+            this.getStateData().setState(StateData.SHUTDOWN);
 
             try {
-                Thread.sleep(10000 / this.rate);
+                Thread.sleep(10000 / this.configuration.getRate());
             } catch (InterruptedException e) {
                 this.logE(e);
             }
         }
+
+        return result;
     }
 
     @Override
-    public XbmcConfig onReconfigure(XbmcConfig config, int level) {
-        this.rate = config.getInteger(XbmcConfig.RATE, this.rate);
-        return config;
+    protected XbmcConfig getConfig() {
+        return new XbmcConfig(this.getConnectedNode());
     }
 
     private boolean pingXbmc() {
         String ping = this.xbmcJson.getResult(new Ping());
         return ping != null && ping.equals("pong");
-    }
-
-    public StateData getStateData() {
-        return this.stateData;
-    }
-
-    public ConnectedNode getNode() {
-        return this.connectedNode;
     }
 }

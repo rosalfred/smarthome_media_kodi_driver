@@ -51,6 +51,10 @@ public class XbmcSpeaker implements ISpeaker {
 	}
 
 	@Override
+	public void load(StateData stateData) {
+	    this.load(stateData.getSpeaker());
+	}
+
 	public void load(SpeakerInfo speakerInfo) {
 		PropertyValue property = this.xbmcJson.getResult(
 				new Application.GetProperties(
@@ -110,7 +114,7 @@ public class XbmcSpeaker implements ISpeaker {
 				XbmcNode.SRV_MUTE_SPEAKER_TOGGLE,
 				this.xbmcNode.getStateData().getSpeaker().getMuted()));
 
-		MediaAction message = this.xbmcNode.getNode().getTopicMessageFactory()
+		MediaAction message = this.xbmcNode.getConnectedNode().getTopicMessageFactory()
 				.newFromType(MediaAction._TYPE);
 
 		message.setMethod(XbmcSpeaker.OP_MUTE_TOGGLE);

@@ -65,6 +65,10 @@ public class XbmcPlayer implements IPlayer {
     }
 
     @Override
+    public void load(StateData statedata) {
+        this.load(statedata.getPlayer());
+    }
+
     public void load(PlayerInfo playerInfo) {
         this.resetInfo(playerInfo);
 
