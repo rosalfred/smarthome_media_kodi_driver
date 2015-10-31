@@ -19,8 +19,6 @@ import com.alfred.ros.core.NodeConfig;
  */
 public class XbmcConfig extends NodeConfig {
 
-    public static final String RATE = "rate";
-
     private String host;
     private int    port;
     private String user;
@@ -32,6 +30,8 @@ public class XbmcConfig extends NodeConfig {
 
     @Override
     protected void loadParameters() {
+        super.loadParameters();
+
         this.host = this.connectedNode.getParameterTree()
                 .getString("~ip", "192.168.0.38");
         this.port = this.connectedNode.getParameterTree()
