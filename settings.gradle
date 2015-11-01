@@ -2,7 +2,7 @@
 //this is needed because repository contains multipackage and cause problem with release
 rootProject.name = 'media_xbmc_ip_driver'
 
-include '..:media_driver',
-	'xbmc_jsonrpc',
-	'..:media_msgs_java',
-	'..:media_model'
+include '..:rosjava_dynamic_reconfigure','..:network_zeroconf',
+    '..:media_driver',
+    'xbmc_jsonrpc',
+    '..:media_model'
