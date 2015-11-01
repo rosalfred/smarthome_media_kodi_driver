@@ -3,14 +3,14 @@
 <launch>
 
 	<!-- DRIVERS -->
-    <node pkg="media_xbmc_driver"
+    <node pkg="media_xbmc_ip_driver"
 			name="xbmc_salon"
-			type="media_xbmc_driver"
+			type="media_xbmc_ip_driver"
 			args="com.alfred.ros.xbmc.XbmcNode"
 			output="screen">
 		<param name="rate" value="1" />
 		<param name="mac" value="" />
-		<param name="ip" value="192.168.0.10" />
+		<param name="ip" value="192.168.0.68" />
 		<param name="tf_prefix" value="xbmc_salon" />
 	</node>
 
