@@ -6,16 +6,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-package com.alfred.ros.xbmc.internal;
+package org.rosmultimedia.player.xbmc.internal;
+
+import org.rosbuilding.common.ISystem;
+import org.rosmultimedia.player.xbmc.XbmcNode;
+import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
+import org.xbmc.android.jsonrpc.api.call.System;
 
 import media_msgs.MediaAction;
 import media_msgs.StateData;
-
-import org.xbmc.android.jsonrpc.api.call.System;
-
-import com.alfred.ros.core.ISystem;
-import com.alfred.ros.xbmc.XbmcNode;
-import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
 
 /**
  * Xbmc System module.

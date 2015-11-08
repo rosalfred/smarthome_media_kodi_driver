@@ -6,7 +6,23 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-package com.alfred.ros.xbmc;
+package org.rosmultimedia.player.xbmc;
+
+import org.ros.exception.ServiceException;
+import org.ros.node.ConnectedNode;
+import org.ros.node.Node;
+import org.ros.node.service.ServiceResponseBuilder;
+import org.rosbuilding.common.BaseNodeMain;
+import org.rosbuilding.common.media.MediaMessageConverter;
+import org.rosbuilding.common.media.MediaStateDataComparator;
+import org.rosmultimedia.player.xbmc.internal.XbmcLibrary;
+import org.rosmultimedia.player.xbmc.internal.XbmcMonitor;
+import org.rosmultimedia.player.xbmc.internal.XbmcPlayer;
+import org.rosmultimedia.player.xbmc.internal.XbmcSpeaker;
+import org.rosmultimedia.player.xbmc.internal.XbmcSystem;
+import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
+import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
+import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
 import media_msgs.MediaAction;
 import media_msgs.MediaGetItem;
@@ -19,23 +35,6 @@ import media_msgs.StateData;
 import media_msgs.ToggleMuteSpeaker;
 import media_msgs.ToggleMuteSpeakerRequest;
 import media_msgs.ToggleMuteSpeakerResponse;
-
-import org.ros.exception.ServiceException;
-import org.ros.node.ConnectedNode;
-import org.ros.node.Node;
-import org.ros.node.service.ServiceResponseBuilder;
-import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
-import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
-
-import com.alfred.ros.core.BaseNodeMain;
-import com.alfred.ros.media.MediaMessageConverter;
-import com.alfred.ros.media.MediaStateDataComparator;
-import com.alfred.ros.xbmc.internal.XbmcLibrary;
-import com.alfred.ros.xbmc.internal.XbmcMonitor;
-import com.alfred.ros.xbmc.internal.XbmcPlayer;
-import com.alfred.ros.xbmc.internal.XbmcSpeaker;
-import com.alfred.ros.xbmc.internal.XbmcSystem;
-import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
 
 /**
  * Xbmc ROS Node.

@@ -6,7 +6,7 @@
     <node pkg="media_xbmc_driver"
 			name="xbmc_salon"
 			type="media_xbmc_driver"
-			args="com.alfred.ros.xbmc.XbmcNode"
+			args="org.rosmultimedia.player.xbmc.XbmcNode"
 			output="screen">
 		<param name="rate" value="1" />
 		<param name="mac" value="" />

@@ -1,6 +1,6 @@
-package com.alfred.ros.xbmc;
+package org.rosmultimedia.player.xbmc;
 
-import com.alfred.ros.core.INode;
+import org.rosbuilding.common.INode;
 
 import media_msgs.StateData;
 

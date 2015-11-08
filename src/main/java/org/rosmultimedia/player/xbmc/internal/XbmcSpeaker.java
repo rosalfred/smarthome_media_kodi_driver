@@ -6,22 +6,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-package com.alfred.ros.xbmc.internal;
+package org.rosmultimedia.player.xbmc.internal;
+
+import org.rosbuilding.common.media.ISpeaker;
+import org.rosmultimedia.player.xbmc.XbmcNode;
+import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
+import org.xbmc.android.jsonrpc.api.call.Application;
+import org.xbmc.android.jsonrpc.api.model.ApplicationModel.PropertyValue;
+import org.xbmc.android.jsonrpc.api.model.GlobalModel.Toggle;
 
 import media_msgs.MediaAction;
 import media_msgs.SpeakerInfo;
 import media_msgs.StateData;
 import media_msgs.ToggleMuteSpeakerRequest;
 import media_msgs.ToggleMuteSpeakerResponse;
-
-import org.xbmc.android.jsonrpc.api.call.Application;
-import org.xbmc.android.jsonrpc.api.model.ApplicationModel.PropertyValue;
-import org.xbmc.android.jsonrpc.api.model.GlobalModel.Toggle;
-
-import com.alfred.ros.media.ISpeaker;
-import com.alfred.ros.xbmc.XbmcNode;
-import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
-
 
 /**
  * Xbmc Speaker module.

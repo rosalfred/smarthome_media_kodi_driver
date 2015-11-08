@@ -6,11 +6,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-package com.alfred.ros.xbmc.internal;
+package org.rosmultimedia.player.xbmc.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.rosbuilding.common.media.ILibrary;
+import org.rosmultimedia.player.media.model.Album;
+import org.rosmultimedia.player.media.model.Media;
+import org.rosmultimedia.player.media.model.Movie;
+import org.rosmultimedia.player.media.model.Song;
+import org.rosmultimedia.player.media.model.Tvshow;
+import org.rosmultimedia.player.xbmc.IXbmcNode;
+import org.rosmultimedia.player.xbmc.XbmcNode;
+import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
 import org.xbmc.android.jsonrpc.api.call.AudioLibrary;
 import org.xbmc.android.jsonrpc.api.call.VideoLibrary.GetEpisodeDetails;
 import org.xbmc.android.jsonrpc.api.call.VideoLibrary.GetEpisodes;
@@ -24,6 +33,7 @@ import org.xbmc.android.jsonrpc.api.model.ListModel.AlbumFilterRule;
 import org.xbmc.android.jsonrpc.api.model.ListModel.EpisodeFilter;
 import org.xbmc.android.jsonrpc.api.model.ListModel.EpisodeFilterRule;
 import org.xbmc.android.jsonrpc.api.model.ListModel.FilterRule;
+import org.xbmc.android.jsonrpc.api.model.ListModel.FilterRule.Value;
 import org.xbmc.android.jsonrpc.api.model.ListModel.Limits;
 import org.xbmc.android.jsonrpc.api.model.ListModel.MovieFilter;
 import org.xbmc.android.jsonrpc.api.model.ListModel.MovieFilterRule;
@@ -32,16 +42,12 @@ import org.xbmc.android.jsonrpc.api.model.ListModel.SongFilterRule;
 import org.xbmc.android.jsonrpc.api.model.ListModel.Sort;
 import org.xbmc.android.jsonrpc.api.model.ListModel.TVShowFilter;
 import org.xbmc.android.jsonrpc.api.model.ListModel.TVShowFilterRule;
-import org.xbmc.android.jsonrpc.api.model.ListModel.FilterRule.Value;
 import org.xbmc.android.jsonrpc.api.model.VideoModel.EpisodeDetail;
 import org.xbmc.android.jsonrpc.api.model.VideoModel.FileDetail;
 import org.xbmc.android.jsonrpc.api.model.VideoModel.ItemDetail;
 import org.xbmc.android.jsonrpc.api.model.VideoModel.MovieDetail;
 import org.xbmc.android.jsonrpc.api.model.VideoModel.TVShowDetail;
 
-import com.alfred.ros.media.ILibrary;
-import com.alfred.ros.xbmc.IXbmcNode;
-import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
 import com.google.common.base.Strings;
 import com.google.common.collect.ObjectArrays;
 
@@ -51,12 +57,6 @@ import media_msgs.MediaGetItemsRequest;
 import media_msgs.MediaGetItemsResponse;
 import media_msgs.MediaItem;
 import media_msgs.MediaType;
-
-import com.alfred.ros.media.model.Album;
-import com.alfred.ros.media.model.Media;
-import com.alfred.ros.media.model.Movie;
-import com.alfred.ros.media.model.Song;
-import com.alfred.ros.media.model.Tvshow;
 
 /**
  * Xbmc Libray Module.

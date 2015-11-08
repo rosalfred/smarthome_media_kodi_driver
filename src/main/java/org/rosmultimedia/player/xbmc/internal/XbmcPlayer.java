@@ -6,16 +6,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-package com.alfred.ros.xbmc.internal;
+package org.rosmultimedia.player.xbmc.internal;
 
 import java.util.List;
 
-import media_msgs.MediaAction;
-import media_msgs.MediaType;
-import media_msgs.PlayerInfo;
-import media_msgs.StateData;
-
 import org.ros.message.Duration;
+import org.rosbuilding.common.media.IPlayer;
+import org.rosmultimedia.player.xbmc.XbmcNode;
+import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
 import org.xbmc.android.jsonrpc.api.call.GUI;
 import org.xbmc.android.jsonrpc.api.call.Input;
 import org.xbmc.android.jsonrpc.api.call.Player;
@@ -28,10 +26,12 @@ import org.xbmc.android.jsonrpc.api.model.PlayerModel;
 import org.xbmc.android.jsonrpc.api.model.PlayerModel.PositionTime;
 import org.xbmc.android.jsonrpc.api.model.PlaylistModel;
 
-import com.alfred.ros.media.IPlayer;
-import com.alfred.ros.xbmc.XbmcNode;
-import com.alfred.ros.xbmc.jsonrpc.XbmcJson;
 import com.google.common.base.Strings;
+
+import media_msgs.MediaAction;
+import media_msgs.MediaType;
+import media_msgs.PlayerInfo;
+import media_msgs.StateData;
 
 /**
  * Xbmc Player module.
