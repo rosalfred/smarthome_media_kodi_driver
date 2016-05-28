@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>media_xbmc_ip_driver</name>
+  <name>media_kodi_ip_driver</name>
   <version>0.1.56</version>
   <description>This package is for interfacing XBMC (by Rest API) to ROS. This package is part of Alfred Assistant stack.</description>
 

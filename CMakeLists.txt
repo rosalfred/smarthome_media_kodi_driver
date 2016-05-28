@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-project(media_xbmc_ip_driver)
+project(media_kodi_ip_driver)
 set(PACKAGE_PATH "org/rosmultimedia/player")
 
 find_package(catkin REQUIRED
