@@ -9,8 +9,8 @@
 			args="org.rosmultimedia.player.xbmc.XbmcNode"
 			output="screen">
 		<param name="rate" value="1" />
-		<param name="mac" value="" />
-		<param name="ip" value="192.168.0.68" />
+		<param name="mac" value="{your_kodi_mac}" />
+		<param name="ip" value="{your_kodi_ip}" />
 		<param name="tf_prefix" value="xbmc_salon" />
 	</node>
 
