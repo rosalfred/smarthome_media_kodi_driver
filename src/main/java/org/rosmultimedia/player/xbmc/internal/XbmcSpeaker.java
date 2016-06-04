@@ -15,11 +15,11 @@ import org.xbmc.android.jsonrpc.api.call.Application;
 import org.xbmc.android.jsonrpc.api.model.ApplicationModel.PropertyValue;
 import org.xbmc.android.jsonrpc.api.model.GlobalModel.Toggle;
 
-import media_msgs.MediaAction;
-import media_msgs.SpeakerInfo;
-import media_msgs.StateData;
-import media_msgs.ToggleMuteSpeakerRequest;
-import media_msgs.ToggleMuteSpeakerResponse;
+import smarthome_media_msgs.MediaAction;
+import smarthome_media_msgs.SpeakerInfo;
+import smarthome_media_msgs.StateData;
+import smarthome_media_msgs.ToggleMuteSpeakerRequest;
+import smarthome_media_msgs.ToggleMuteSpeakerResponse;
 
 /**
  * Xbmc Speaker module.

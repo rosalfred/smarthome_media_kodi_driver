@@ -2,7 +2,7 @@
 //this is needed because repository contains multipackage and cause problem with release
 rootProject.name = 'media_kodi_ip_driver'
 
-include '..:rosjava_dynamic_reconfigure','..:network_zeroconf',
-    '..:media_driver',
+include '..:rosjava_dynamic_reconfigure','..:smarthome_network_zeroconf',
+    '..:smarthome_common_driver',
     'xbmc_jsonrpc',
-    '..:media_model'
+    '..:smarthome_media_model'

@@ -28,10 +28,10 @@ import org.xbmc.android.jsonrpc.api.model.PlaylistModel;
 
 import com.google.common.base.Strings;
 
-import media_msgs.MediaAction;
-import media_msgs.MediaType;
-import media_msgs.PlayerInfo;
-import media_msgs.StateData;
+import smarthome_media_msgs.MediaAction;
+import smarthome_media_msgs.MediaType;
+import smarthome_media_msgs.PlayerInfo;
+import smarthome_media_msgs.StateData;
 
 /**
  * Xbmc Player module.

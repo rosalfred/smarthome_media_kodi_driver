@@ -10,8 +10,8 @@ package org.rosmultimedia.player.xbmc.internal;
 
 import org.rosbuilding.common.media.IMonitor;
 
-import media_msgs.MediaAction;
-import media_msgs.StateData;
+import smarthome_media_msgs.MediaAction;
+import smarthome_media_msgs.StateData;
 
 
 /**

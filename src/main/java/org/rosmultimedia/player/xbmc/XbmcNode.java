@@ -24,17 +24,17 @@ import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
 import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
 import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
-import media_msgs.MediaAction;
-import media_msgs.MediaGetItem;
-import media_msgs.MediaGetItemRequest;
-import media_msgs.MediaGetItemResponse;
-import media_msgs.MediaGetItems;
-import media_msgs.MediaGetItemsRequest;
-import media_msgs.MediaGetItemsResponse;
-import media_msgs.StateData;
-import media_msgs.ToggleMuteSpeaker;
-import media_msgs.ToggleMuteSpeakerRequest;
-import media_msgs.ToggleMuteSpeakerResponse;
+import smarthome_media_msgs.MediaAction;
+import smarthome_media_msgs.MediaGetItem;
+import smarthome_media_msgs.MediaGetItemRequest;
+import smarthome_media_msgs.MediaGetItemResponse;
+import smarthome_media_msgs.MediaGetItems;
+import smarthome_media_msgs.MediaGetItemsRequest;
+import smarthome_media_msgs.MediaGetItemsResponse;
+import smarthome_media_msgs.StateData;
+import smarthome_media_msgs.ToggleMuteSpeaker;
+import smarthome_media_msgs.ToggleMuteSpeakerRequest;
+import smarthome_media_msgs.ToggleMuteSpeakerResponse;
 
 /**
  * Xbmc ROS Node.

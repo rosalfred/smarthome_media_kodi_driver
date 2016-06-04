@@ -51,12 +51,12 @@ import org.xbmc.android.jsonrpc.api.model.VideoModel.TVShowDetail;
 import com.google.common.base.Strings;
 import com.google.common.collect.ObjectArrays;
 
-import media_msgs.MediaGetItemRequest;
-import media_msgs.MediaGetItemResponse;
-import media_msgs.MediaGetItemsRequest;
-import media_msgs.MediaGetItemsResponse;
-import media_msgs.MediaItem;
-import media_msgs.MediaType;
+import smarthome_media_msgs.MediaGetItemRequest;
+import smarthome_media_msgs.MediaGetItemResponse;
+import smarthome_media_msgs.MediaGetItemsRequest;
+import smarthome_media_msgs.MediaGetItemsResponse;
+import smarthome_media_msgs.MediaItem;
+import smarthome_media_msgs.MediaType;
 
 /**
  * Xbmc Libray Module.
