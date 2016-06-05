@@ -2,8 +2,8 @@
 Changelog for package smarthome_media_kodi_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.57 (2016-06-05)
+-------------------
 * Clean package info
 * Update package dependencies
   Update messages packages names
