@@ -13,8 +13,8 @@ import org.rosmultimedia.player.xbmc.XbmcNode;
 import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
 import org.xbmc.android.jsonrpc.api.call.System;
 
-import smarthome_media_msgs.MediaAction;
-import smarthome_media_msgs.StateData;
+import smarthome_media_msgs.msg.MediaAction;
+import smarthome_media_msgs.msg.StateData;
 
 /**
  * Xbmc System module.

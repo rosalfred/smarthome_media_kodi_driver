@@ -8,7 +8,7 @@
  */
 package org.rosmultimedia.player.xbmc;
 
-import org.ros.node.ConnectedNode;
+import org.ros2.rcljava.node.Node;
 import org.rosbuilding.common.NodeConfig;
 
 /**
@@ -23,22 +23,27 @@ public class XbmcConfig extends NodeConfig {
     private String user;
     private String password;
 
-    public XbmcConfig(ConnectedNode connectedNode) {
-        super(connectedNode, "home/salon/xbmc", "fixed_frame", 1);
+    public XbmcConfig(Node connectedNode) {
+        super(connectedNode, "/home/salon/xbmc/", "fixed_frame", 1);
     }
 
     @Override
     protected void loadParameters() {
         super.loadParameters();
 
-        this.host = this.connectedNode.getParameterTree()
-                .getString("~ip", "192.168.0.38");
-        this.port = this.connectedNode.getParameterTree()
-                .getInteger("~port", 8080);
-        this.user = this.connectedNode.getParameterTree()
-                .getString("~user", "xbmc");
-        this.password = this.connectedNode.getParameterTree()
-                .getString("~password", "xbmc");
+//        this.host = this.connectedNode.getParameterTree()
+//                .getString("~ip", "192.168.0.38");
+//        this.port = this.connectedNode.getParameterTree()
+//                .getInteger("~port", 8080);
+//        this.user = this.connectedNode.getParameterTree()
+//                .getString("~user", "xbmc");
+//        this.password = this.connectedNode.getParameterTree()
+//                .getString("~password", "xbmc");
+
+        this.host = "192.168.0.68";
+        this.port = 8080;
+        this.user = "xbmc";
+        this.password = "xbmc";
 
 //        this.logI(
 //                String.format("rate : %s\nprefix : %s\nfixedFrame : %s\nip : %s\nmac : %s\nport : %s\nuser : %s\npassword : %s",

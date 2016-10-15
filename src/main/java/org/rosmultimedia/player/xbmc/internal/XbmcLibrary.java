@@ -51,12 +51,12 @@ import org.xbmc.android.jsonrpc.api.model.VideoModel.TVShowDetail;
 import com.google.common.base.Strings;
 import com.google.common.collect.ObjectArrays;
 
-import smarthome_media_msgs.MediaGetItemRequest;
-import smarthome_media_msgs.MediaGetItemResponse;
-import smarthome_media_msgs.MediaGetItemsRequest;
-import smarthome_media_msgs.MediaGetItemsResponse;
-import smarthome_media_msgs.MediaItem;
-import smarthome_media_msgs.MediaType;
+import smarthome_media_msgs.msg.MediaItem;
+import smarthome_media_msgs.msg.MediaType;
+import smarthome_media_msgs.srv.MediaGetItem_Request;
+import smarthome_media_msgs.srv.MediaGetItem_Response;
+import smarthome_media_msgs.srv.MediaGetItems_Request;
+import smarthome_media_msgs.srv.MediaGetItems_Response;
 
 /**
  * Xbmc Libray Module.
@@ -65,107 +65,106 @@ import smarthome_media_msgs.MediaType;
  *
  */
 public class XbmcLibrary implements ILibrary {
-	/**
-	 * Xbmc node.
-	 */
-	private IXbmcNode xbmcNode;
+    /**
+     * Xbmc node.
+     */
+    private IXbmcNode xbmcNode;
 
-	/**
-	 * Xbmc json-rpc.
-	 */
-	private XbmcJson xbmcJson;
+    /**
+     * Xbmc json-rpc.
+     */
+    private XbmcJson xbmcJson;
 
-	/**
-	 * XbmcLibrary constructor.
-	 * @param xbmcJson {@link XbmcJson} xbmc json-rpc
-	 * @param xbmcNode {@link XbmcNode} xbmc node
-	 */
-	public XbmcLibrary(XbmcJson xbmcJson, IXbmcNode node) {
-		this.xbmcJson = xbmcJson;
-		this.xbmcNode = node;
-	}
+    /**
+     * XbmcLibrary constructor.
+     * @param xbmcJson {@link XbmcJson} xbmc json-rpc
+     * @param xbmcNode {@link XbmcNode} xbmc node
+     */
+    public XbmcLibrary(XbmcJson xbmcJson, IXbmcNode node) {
+        this.xbmcJson = xbmcJson;
+        this.xbmcNode = node;
+    }
 
-	@Override
-	public void handleMediaGetItem(MediaGetItemRequest request,
-			MediaGetItemResponse response) {
-		this.xbmcNode.logI("Service call MediaGetItem");
+    @Override
+    public void handleMediaGetItem(MediaGetItem_Request request, MediaGetItem_Response response) {
+        this.xbmcNode.logI("Service call MediaGetItem");
 
-		int mediaId = request.getItem().getMediaid();
-		MediaType mediaType = request.getItem().getMediatype();
+        int mediaId = request.getItem().getMediaid();
+        MediaType mediaType = request.getItem().getMediatype();
 
-		if (Strings.isNullOrEmpty(mediaType.getValue())) {
-		    mediaType = this.xbmcNode.getStateData().getPlayer().getMediatype();
-		}
+        if (Strings.isNullOrEmpty(mediaType.getValue())) {
+            mediaType = this.xbmcNode.getStateData().getPlayer().getMediatype();
+        }
 
-		Media media = null;
+        Media media = null;
 
-		if (mediaId < 0) {
-			mediaId = 0;
-		}
+        if (mediaId < 0) {
+            mediaId = 0;
+        }
 
-		if (mediaType.getValue().equals(MediaType.VIDEO_MOVIE)) {
-			media = this.getMovie(mediaId);
-		} else if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
-			media = this.getTvshowEpisode(mediaId);
-		} else if (mediaType.getValue().equals(MediaType.AUDIO_SONG)) {
-		    media = this.getAudioSong(mediaId);
-		} else if (mediaType.getValue().equals(MediaType.AUDIO_ALBUM)) {
+        if (mediaType.getValue().equals(MediaType.VIDEO_MOVIE)) {
+            media = this.getMovie(mediaId);
+        } else if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
+            media = this.getTvshowEpisode(mediaId);
+        } else if (mediaType.getValue().equals(MediaType.AUDIO_SONG)) {
+            media = this.getAudioSong(mediaId);
+        } else if (mediaType.getValue().equals(MediaType.AUDIO_ALBUM)) {
             media = this.getAudioAlbum(mediaId);
         }
 
-		if (media == null) {
-			//We need to send default message.
-			media = new Media();
-		}
+        if (media == null) {
+            //We need to send default message.
+            media = new Media();
+        }
 
-		MediaItem result = this.xbmcNode.getNewMessageInstance(MediaItem._TYPE);
+        MediaItem result = new MediaItem(); //this.xbmcNode.getNewMessageInstance(MediaItem._TYPE);
 
-		result.setMediaid(media.getMediaid());
-		result.setMediatype(mediaType);
-		result.setData(media.toJson());
+        result.setMediaid(media.getMediaid());
+        result.setMediatype(mediaType);
+        result.setData(media.toJson());
 
-		response.setItem(result);
-	}
+        response.setItem(result);
+    }
 
-	@Override
-	public void handleMediaGetItems(MediaGetItemsRequest request,
-			MediaGetItemsResponse response) {
-		this.xbmcNode.logI("Service call MediaGetItems");
+    @Override
+    public void handleMediaGetItems(MediaGetItems_Request request,
+            MediaGetItems_Response response) {
+        this.xbmcNode.logI("Service call MediaGetItems");
 
-		int mediaId = request.getItem().getMediaid();
-		MediaType mediaType = request.getItem().getMediatype();
-		List<Media> medias = null;
+        int mediaId = request.getItem().getMediaid();
+        MediaType mediaType = request.getItem().getMediatype();
+        List<Media> medias = null;
 
-		if (mediaId < 0) {
-			mediaId = 0;
-		}
+        if (mediaId < 0) {
+            mediaId = 0;
+        }
 
-		if (mediaType.getValue().equals(MediaType.VIDEO_MOVIE)) {
-		    Movie media = Movie.fromJson(request.getItem().getData());
-			medias = this.getMovies(media, null);
-		} else if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
-		    Tvshow media = Tvshow.fromJson(request.getItem().getData());
-			medias = this.getTvshows(media, null);
-		} else if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW)) {
-		    Tvshow media = Tvshow.fromJson(request.getItem().getData());
-			medias = this.getTvshowEpisodes(media, null);
-		} else if (mediaType.getValue().equals(MediaType.AUDIO_SONG)) {
-		    Song media = Song.fromJson(request.getItem().getData());
-		    medias = this.getAudioSongs(media, null);
-		} else if (mediaType.getValue().equals(MediaType.AUDIO_ALBUM)) {
-		    Album media = Album.fromJson(request.getItem().getData());
+        if (mediaType.getValue().equals(MediaType.VIDEO_MOVIE)) {
+            Movie media = Movie.fromJson(request.getItem().getData());
+            medias = this.getMovies(media, null);
+        } else if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
+            Tvshow media = Tvshow.fromJson(request.getItem().getData());
+            medias = this.getTvshows(media, null);
+        } else if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW)) {
+            Tvshow media = Tvshow.fromJson(request.getItem().getData());
+            medias = this.getTvshowEpisodes(media, null);
+        } else if (mediaType.getValue().equals(MediaType.AUDIO_SONG)) {
+            Song media = Song.fromJson(request.getItem().getData());
+            medias = this.getAudioSongs(media, null);
+        } else if (mediaType.getValue().equals(MediaType.AUDIO_ALBUM)) {
+            Album media = Album.fromJson(request.getItem().getData());
             medias = this.getAudioAlbums(media, null);
         }
 
-		if (medias == null) {
-			//We need to send default message.
-			medias = new ArrayList<Media>();
-		}
+        if (medias == null) {
+            //We need to send default message.
+            medias = new ArrayList<Media>();
+        }
 
-		List<MediaItem> result = new ArrayList<MediaItem>();
+        List<MediaItem> result = new ArrayList<MediaItem>();
 
-		for (Media media : medias) {
-            MediaItem item = this.xbmcNode.getNewMessageInstance(MediaItem._TYPE);
+        for (Media media : medias) {
+            MediaItem item = new MediaItem(); //this.xbmcNode.getNewMessageInstance(MediaItem._TYPE);
 
             item.setMediaid(media.getMediaid());
             item.setMediatype(mediaType);
@@ -174,46 +173,46 @@ public class XbmcLibrary implements ILibrary {
             result.add(item);
         }
 
-		response.setItems(result);
-	}
+        response.setItems(result);
+    }
 
-	/**
-	 * Get movie from xbmc json-rpc.
-	 * @param mediaId Id of the movie to find
-	 * @return {@link Media}
-	 */
-	private Media getMovie(int mediaId) {
-		Media result = null;
+    /**
+     * Get movie from xbmc json-rpc.
+     * @param mediaId Id of the movie to find
+     * @return {@link Media}
+     */
+    private Media getMovie(int mediaId) {
+        Media result = null;
 
-		if (mediaId > 0) {
-			String[] properties = this.getMovieProperties();
-			MovieDetail item = this.xbmcJson.getResult(new GetMovieDetails(
-					mediaId, properties));
-			result = this.getMovie(item);
-		}
+        if (mediaId > 0) {
+            String[] properties = this.getMovieProperties();
+            MovieDetail item = this.xbmcJson.getResult(new GetMovieDetails(
+                    mediaId, properties));
+            result = this.getMovie(item);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Get episode tvshow from xbmc json-rpc.
-	 * @param mediaId Id of the tvshow to find
-	 * @return {@link Media}
-	 */
-	private Media getTvshowEpisode(int mediaId) {
-		Media result = null;
+    /**
+     * Get episode tvshow from xbmc json-rpc.
+     * @param mediaId Id of the tvshow to find
+     * @return {@link Media}
+     */
+    private Media getTvshowEpisode(int mediaId) {
+        Media result = null;
 
-		if (mediaId > 0) {
-			String[] properties = this.getTvshowEpisodeProperties();
-			EpisodeDetail item = this.xbmcJson.getResult(new GetEpisodeDetails(
-					mediaId, properties));
-			result = this.getTvshowEpisode(item);
-		}
+        if (mediaId > 0) {
+            String[] properties = this.getTvshowEpisodeProperties();
+            EpisodeDetail item = this.xbmcJson.getResult(new GetEpisodeDetails(
+                    mediaId, properties));
+            result = this.getTvshowEpisode(item);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
+    /**
      * Get song from xbmc json-rpc.
      * @param mediaId Id of the song to find
      * @return {@link Media}
@@ -249,45 +248,45 @@ public class XbmcLibrary implements ILibrary {
         return result;
     }
 
-	/**
-	 * Get movies from xbmc json-rpc.
-	 * @param item {@link Media} with value for filtering
-	 * @param limits Limits for the results list
-	 * @return List of {@link Media}
-	 */
-	private List<Media> getMovies(Movie item, Limits limits) {
-		List<Media> result = new ArrayList<Media>();
-		List<MovieFilter> filters = new ArrayList<MovieFilter>();
-		MovieFilter filter = null;
-		String title = item.getTitle();
+    /**
+     * Get movies from xbmc json-rpc.
+     * @param item {@link Media} with value for filtering
+     * @param limits Limits for the results list
+     * @return List of {@link Media}
+     */
+    private List<Media> getMovies(Movie item, Limits limits) {
+        List<Media> result = new ArrayList<Media>();
+        List<MovieFilter> filters = new ArrayList<MovieFilter>();
+        MovieFilter filter = null;
+        String title = item.getTitle();
 
-		if (!Strings.isNullOrEmpty(title)) {
-			String[] titleParts = title.split(" ");
+        if (!Strings.isNullOrEmpty(title)) {
+            String[] titleParts = title.split(" ");
 
-			for (String part : titleParts) {
-				filters.add(this.getMovieFilter(
-				        FilterRule.Operator.CONTAINS,
-				        part,
-				        MovieFilterRule.Field.TITLE));
-			}
-		}
+            for (String part : titleParts) {
+                filters.add(this.getMovieFilter(
+                        FilterRule.Operator.CONTAINS,
+                        part,
+                        MovieFilterRule.Field.TITLE));
+            }
+        }
 
-		if (item.getMediaid() > 0) {
-		    filters.add(this.getMovieFilter(
-		            FilterRule.Operator.IS,
-		            String.valueOf(item.getMediaid()),
-		            "movieid"));
-		}
+        if (item.getMediaid() > 0) {
+            filters.add(this.getMovieFilter(
+                    FilterRule.Operator.IS,
+                    String.valueOf(item.getMediaid()),
+                    "movieid"));
+        }
 
-		if (item.getYear() > 0) {
-		    filters.add(this.getMovieFilter(
-		            FilterRule.Operator.IS,
-		            String.valueOf(item.getYear()),
-		            MovieFilterRule.Field.YEAR));
-		}
+        if (item.getYear() > 0) {
+            filters.add(this.getMovieFilter(
+                    FilterRule.Operator.IS,
+                    String.valueOf(item.getYear()),
+                    MovieFilterRule.Field.YEAR));
+        }
 
-		if (item.getCast() != null && !item.getCast().isEmpty()) {
-		    for (String actor : item.getCast()) {
+        if (item.getCast() != null && !item.getCast().isEmpty()) {
+            for (String actor : item.getCast()) {
                 if (!Strings.isNullOrEmpty(actor)) {
                     filters.add(this.getMovieFilter(
                             FilterRule.Operator.CONTAINS,
@@ -295,131 +294,131 @@ public class XbmcLibrary implements ILibrary {
                             MovieFilterRule.Field.ACTOR));
                 }
             }
-		}
+        }
 
-		if (!filters.isEmpty()) {
-			filter = new MovieFilter(new MovieFilter.And(filters));
-		}
+        if (!filters.isEmpty()) {
+            filter = new MovieFilter(new MovieFilter.And(filters));
+        }
 
-		Sort sort = new Sort(false, "label", "ascending");
-		String[] properties = this.getMovieProperties();
+        Sort sort = new Sort(false, "label", "ascending");
+        String[] properties = this.getMovieProperties();
 
-		List<MovieDetail> items = this.xbmcJson.getResults(new GetMovies(
-				limits, sort, filter, properties));
+        List<MovieDetail> items = this.xbmcJson.getResults(new GetMovies(
+                limits, sort, filter, properties));
 
-		if (items != null) {
-    		for (MovieDetail itemDetail : items) {
-    		    result.add(this.getMovie(itemDetail));
-			}
-		}
+        if (items != null) {
+            for (MovieDetail itemDetail : items) {
+                result.add(this.getMovie(itemDetail));
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	private MovieFilter getMovieFilter(String operator, String value, String field) {
-	    return new MovieFilter(new MovieFilterRule(
-	            operator,
+    private MovieFilter getMovieFilter(String operator, String value, String field) {
+        return new MovieFilter(new MovieFilterRule(
+                operator,
                 new Value(value),
                 field));
-	}
+    }
 
-	/**
-	 * Get episodes tvshow from xbmc json-rpc.
-	 * @param item {@link Media} with value for filtering
-	 * @param limits Limits for the results list
-	 * @return List of {@link Media}
-	 */
-	private List<Media> getTvshowEpisodes(Tvshow item, Limits limits) {
-		List<Media> result = new ArrayList<Media>();
-		List<EpisodeFilter> filters = new ArrayList<EpisodeFilter>();
-		EpisodeFilter filter = null;
-		String showtitle = item.getShowtitle();
-		int season = item.getSeason();
-		int episode = item.getEpisode();
-		int playcount = item.getPlaycount();
+    /**
+     * Get episodes tvshow from xbmc json-rpc.
+     * @param item {@link Media} with value for filtering
+     * @param limits Limits for the results list
+     * @return List of {@link Media}
+     */
+    private List<Media> getTvshowEpisodes(Tvshow item, Limits limits) {
+        List<Media> result = new ArrayList<Media>();
+        List<EpisodeFilter> filters = new ArrayList<EpisodeFilter>();
+        EpisodeFilter filter = null;
+        String showtitle = item.getShowtitle();
+        int season = item.getSeason();
+        int episode = item.getEpisode();
+        int playcount = item.getPlaycount();
 
-		if (!Strings.isNullOrEmpty(showtitle)) {
-			String[] titleParts = showtitle.split(" ");
+        if (!Strings.isNullOrEmpty(showtitle)) {
+            String[] titleParts = showtitle.split(" ");
 
-			for (String part : titleParts) {
-				filters.add(new EpisodeFilter(new EpisodeFilterRule("contains",
-						new Value(part), "tvshow")));
-			}
-		}
+            for (String part : titleParts) {
+                filters.add(new EpisodeFilter(new EpisodeFilterRule("contains",
+                        new Value(part), "tvshow")));
+            }
+        }
 
-		if (season > 0) {
-			filters.add(new EpisodeFilter(new EpisodeFilterRule("is",
-					new Value(String.valueOf(season)), "season")));
-		}
+        if (season > 0) {
+            filters.add(new EpisodeFilter(new EpisodeFilterRule("is",
+                    new Value(String.valueOf(season)), "season")));
+        }
 
-		if (episode > 0) {
-			filters.add(new EpisodeFilter(new EpisodeFilterRule("is",
-					new Value(String.valueOf(season)), "episode")));
-		}
+        if (episode > 0) {
+            filters.add(new EpisodeFilter(new EpisodeFilterRule("is",
+                    new Value(String.valueOf(season)), "episode")));
+        }
 
-		if (playcount > 0) {
-			filters.add(new EpisodeFilter(new EpisodeFilterRule("is",
-					new Value(String.valueOf(playcount)), "playcount")));
-		}
+        if (playcount > 0) {
+            filters.add(new EpisodeFilter(new EpisodeFilterRule("is",
+                    new Value(String.valueOf(playcount)), "playcount")));
+        }
 
-		if (!filters.isEmpty()) {
-			filter = new EpisodeFilter(new EpisodeFilter.And(filters));
-		}
+        if (!filters.isEmpty()) {
+            filter = new EpisodeFilter(new EpisodeFilter.And(filters));
+        }
 
-		String[] properties = this.getTvshowEpisodeProperties();
-		List<EpisodeDetail> items = this.xbmcJson.getResults(new GetEpisodes(
-				limits, filter, properties));
+        String[] properties = this.getTvshowEpisodeProperties();
+        List<EpisodeDetail> items = this.xbmcJson.getResults(new GetEpisodes(
+                limits, filter, properties));
 
-		if (items != null) {
-			for (EpisodeDetail itemDetail : items) {
-				result.add(this.getTvshowEpisode(itemDetail));
-			}
-		}
+        if (items != null) {
+            for (EpisodeDetail itemDetail : items) {
+                result.add(this.getTvshowEpisode(itemDetail));
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Get tvshows from xbmc json-rpc
-	 * @param item {@link Media} with value for filtering
-	 * @param limits Limits for the results list
-	 * @return List of {@link Media}
-	 */
-	private List<Media> getTvshows(Media item, Limits limits) {
-		List<Media> result = new ArrayList<Media>();
-		List<TVShowFilter> filters = new ArrayList<TVShowFilter>();
-		TVShowFilter filter = null;
-		String title = item.getTitle();
+    /**
+     * Get tvshows from xbmc json-rpc
+     * @param item {@link Media} with value for filtering
+     * @param limits Limits for the results list
+     * @return List of {@link Media}
+     */
+    private List<Media> getTvshows(Media item, Limits limits) {
+        List<Media> result = new ArrayList<Media>();
+        List<TVShowFilter> filters = new ArrayList<TVShowFilter>();
+        TVShowFilter filter = null;
+        String title = item.getTitle();
 
-		if (!Strings.isNullOrEmpty(title)) {
-			String[] titleParts = title.split(" ");
+        if (!Strings.isNullOrEmpty(title)) {
+            String[] titleParts = title.split(" ");
 
-			for (String part : titleParts) {
-				filters.add(new TVShowFilter(new TVShowFilterRule("contains",
-						new Value(part), "title")));
-			}
-		}
+            for (String part : titleParts) {
+                filters.add(new TVShowFilter(new TVShowFilterRule("contains",
+                        new Value(part), "title")));
+            }
+        }
 
-		if (!filters.isEmpty()) {
-			filter = new TVShowFilter(new TVShowFilter.And(filters));
-		}
+        if (!filters.isEmpty()) {
+            filter = new TVShowFilter(new TVShowFilter.And(filters));
+        }
 
-		Sort sort = new Sort(false, "label", "ascending");
-		String[] properties = this.getTvshowProperties();
+        Sort sort = new Sort(false, "label", "ascending");
+        String[] properties = this.getTvshowProperties();
 
-		List<TVShowDetail> items = this.xbmcJson.getResults(new GetTVShows(
-				limits, sort, filter, properties));
+        List<TVShowDetail> items = this.xbmcJson.getResults(new GetTVShows(
+                limits, sort, filter, properties));
 
-		if (items != null) {
-    		for (TVShowDetail itemDetail : items) {
-    			result.add(this.getTvshow(itemDetail));
-    		}
-		}
+        if (items != null) {
+            for (TVShowDetail itemDetail : items) {
+                result.add(this.getTvshow(itemDetail));
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
+    /**
      * Get songs from xbmc json-rpc.
      * @param item {@link Media} with value for filtering
      * @param limits Limits for the results list
@@ -507,20 +506,20 @@ public class XbmcLibrary implements ILibrary {
         return result;
     }
 
-	/**
-	 *
-	 * @return List of basic media item properties
-	 */
-	private String[] getItemProperties() {
-		String[] properties = { "title", "plot", "votes", "rating", "writer",
-				"playcount", "runtime", "director", "originaltitle", "cast",
-				"streamdetails", "lastplayed", "fanart", "thumbnail", "file",
-				"resume", "dateadded"/*, "art"*/ };
+    /**
+     *
+     * @return List of basic media item properties
+     */
+    private String[] getItemProperties() {
+        String[] properties = { "title", "plot", "votes", "rating", "writer",
+                "playcount", "runtime", "director", "originaltitle", "cast",
+                "streamdetails", "lastplayed", "fanart", "thumbnail", "file",
+                "resume", "dateadded"/*, "art"*/ };
 
-		return properties;
-	}
+        return properties;
+    }
 
-	/**
+    /**
      *
      * @return List of basic media audio item properties
      */
@@ -538,45 +537,45 @@ public class XbmcLibrary implements ILibrary {
         return properties;
     }
 
-	/**
-	 *
-	 * @return List of movie item properties
-	 */
-	private String[] getMovieProperties() {
-		String[] properties = { "genre", "country", "year", "trailer",
-				"tagline", "plotoutline", "studio", "mpaa", "imdbnumber",
-				"set", "showlink", "top250", "sorttitle", "setid", "tag" };
+    /**
+     *
+     * @return List of movie item properties
+     */
+    private String[] getMovieProperties() {
+        String[] properties = { "genre", "country", "year", "trailer",
+                "tagline", "plotoutline", "studio", "mpaa", "imdbnumber",
+                "set", "showlink", "top250", "sorttitle", "setid", "tag" };
 
-		return ObjectArrays.concat(this.getItemProperties(), properties,
-				String.class);
-	}
+        return ObjectArrays.concat(this.getItemProperties(), properties,
+                String.class);
+    }
 
-	/**
-	 *
-	 * @return List of tvshow item properties
-	 */
-	private String[] getTvshowProperties() {
-		String[] properties = { "genre", "year", "plot", "studio", "mpaa",
-				"episode", "imdbnumber", "premiered", "sorttitle",
-				"episodeguide", "season", "watchedepisodes", "tag" };
+    /**
+     *
+     * @return List of tvshow item properties
+     */
+    private String[] getTvshowProperties() {
+        String[] properties = { "genre", "year", "plot", "studio", "mpaa",
+                "episode", "imdbnumber", "premiered", "sorttitle",
+                "episodeguide", "season", "watchedepisodes", "tag" };
 
-		return ObjectArrays.concat(this.getItemProperties(), properties,
-				String.class);
-	}
+        return ObjectArrays.concat(this.getItemProperties(), properties,
+                String.class);
+    }
 
-	/**
-	 *
-	 * @return List of episode tvshow item properties
-	 */
-	private String[] getTvshowEpisodeProperties() {
-		String[] properties = { "firstaired", "art", "productioncode",
-				"season", "episode", "showtitle", "tvshowid", "uniqueid" };
+    /**
+     *
+     * @return List of episode tvshow item properties
+     */
+    private String[] getTvshowEpisodeProperties() {
+        String[] properties = { "firstaired", "art", "productioncode",
+                "season", "episode", "showtitle", "tvshowid", "uniqueid" };
 
-		return ObjectArrays.concat(this.getItemProperties(), properties,
-				String.class);
-	}
+        return ObjectArrays.concat(this.getItemProperties(), properties,
+                String.class);
+    }
 
-	/**
+    /**
      *
      * @return List of song item properties
      */
@@ -602,127 +601,127 @@ public class XbmcLibrary implements ILibrary {
                 String.class);
     }
 
-	/**
-	 * Convert {@link ItemDetail} to {@link Media}.
-	 * @param media {@link ItemDetail} rpc
-	 * @return Get {@link Media} from {@link ItemDetail} rpc
-	 */
-	private void getItemBase(Media video, ItemDetail media) {
+    /**
+     * Convert {@link ItemDetail} to {@link Media}.
+     * @param media {@link ItemDetail} rpc
+     * @return Get {@link Media} from {@link ItemDetail} rpc
+     */
+    private void getItemBase(Media video, ItemDetail media) {
 
-		if (media != null) {
-			video.setTitle(media.title);
-			video.setPlot(media.plot);
-			video.setPlaycount(media.playcount);
-			// Video.Cast cast
-			// Video.Streams streamdetails
-			video.setLastplayed(media.lastplayed);
-			video.setFanart(XbmcUtils.getImageUrl(media.fanart));
-			video.setThumbnail(XbmcUtils.getImageUrl(media.thumbnail));
-			video.setFile(media.file);
-			// #video.resume.position = media["resume"]["position"]
-			// #video.resume.total = media["resume"]["total"]
-			video.setDateadded(media.dateadded);
-			// #Media.Artwork art
-		}
-	}
+        if (media != null) {
+            video.setTitle(media.title);
+            video.setPlot(media.plot);
+            video.setPlaycount(media.playcount);
+            // Video.Cast cast
+            // Video.Streams streamdetails
+            video.setLastplayed(media.lastplayed);
+            video.setFanart(XbmcUtils.getImageUrl(media.fanart));
+            video.setThumbnail(XbmcUtils.getImageUrl(media.thumbnail));
+            video.setFile(media.file);
+            // #video.resume.position = media["resume"]["position"]
+            // #video.resume.total = media["resume"]["total"]
+            video.setDateadded(media.dateadded);
+            // #Media.Artwork art
+        }
+    }
 
-	/**
-	 * Convert {@link FileDetail} to {@link Media}.
-	 * @param file {@link FileDetail} rpc
-	 * @return Get {@link Media} from {@link FileDetail} rpc
-	 */
-	private void getItem(Media media, FileDetail file) {
-		if (file != null) {
-			this.getItemBase(media, file);
-			media.setRuntime(file.runtime);
-			media.setDirector(file.director);
-		}
-	}
+    /**
+     * Convert {@link FileDetail} to {@link Media}.
+     * @param file {@link FileDetail} rpc
+     * @return Get {@link Media} from {@link FileDetail} rpc
+     */
+    private void getItem(Media media, FileDetail file) {
+        if (file != null) {
+            this.getItemBase(media, file);
+            media.setRuntime(file.runtime);
+            media.setDirector(file.director);
+        }
+    }
 
-	/**
-	 * Convert {@link MovieDetail} to {@link Media}.
-	 * @param media {@link MovieDetail} rpc
-	 * @return Get {@link Media} from {@link MovieDetail} rpc
-	 */
-	private Media getMovie(MovieDetail media) {
-		Movie movie = new Movie();
+    /**
+     * Convert {@link MovieDetail} to {@link Media}.
+     * @param media {@link MovieDetail} rpc
+     * @return Get {@link Media} from {@link MovieDetail} rpc
+     */
+    private Media getMovie(MovieDetail media) {
+        Movie movie = new Movie();
 
-		if (media != null) {
-		    this.getItem(movie, media);
+        if (media != null) {
+            this.getItem(movie, media);
 
-			movie.setMediaid(media.movieid);
-			movie.setSetid(media.setid);
-			movie.setSet(media.set);
-			movie.setPlotoutline(media.plotoutline);
-			movie.setSorttitle(media.sorttitle);
-			movie.setYear(media.year);
-			movie.setShowlink(media.showlink);
-			movie.setTop250(media.top250);
-			movie.setTrailer(media.trailer);
-			movie.setCountry(media.country);
-			movie.setStudio(media.studio);
-			movie.setGenre(media.genre);
-			movie.setTag(media.tag);
-			movie.setTagline(media.tagline);
-			movie.setImdbnumber(media.imdbnumber);
-			movie.setMpaa(media.mpaa);
-			movie.setVotes(media.votes);
-			movie.setRating(media.rating);
-			movie.setWriter(media.writer);
-			movie.setOriginaltitle(media.originaltitle);
-		}
+            movie.setMediaid(media.movieid);
+            movie.setSetid(media.setid);
+            movie.setSet(media.set);
+            movie.setPlotoutline(media.plotoutline);
+            movie.setSorttitle(media.sorttitle);
+            movie.setYear(media.year);
+            movie.setShowlink(media.showlink);
+            movie.setTop250(media.top250);
+            movie.setTrailer(media.trailer);
+            movie.setCountry(media.country);
+            movie.setStudio(media.studio);
+            movie.setGenre(media.genre);
+            movie.setTag(media.tag);
+            movie.setTagline(media.tagline);
+            movie.setImdbnumber(media.imdbnumber);
+            movie.setMpaa(media.mpaa);
+            movie.setVotes(media.votes);
+            movie.setRating(media.rating);
+            movie.setWriter(media.writer);
+            movie.setOriginaltitle(media.originaltitle);
+        }
 
-		return movie;
-	}
+        return movie;
+    }
 
-	/**
-	 * Convert {@link TVShowDetail} to {@link Media}.
-	 * @param media {@link TVShowDetail} rpc
-	 * @return Get {@link Media} from {@link TVShowDetail} rpc
-	 */
-	private Media getTvshow(TVShowDetail media) {
-		Tvshow tvshow = new Tvshow();
+    /**
+     * Convert {@link TVShowDetail} to {@link Media}.
+     * @param media {@link TVShowDetail} rpc
+     * @return Get {@link Media} from {@link TVShowDetail} rpc
+     */
+    private Media getTvshow(TVShowDetail media) {
+        Tvshow tvshow = new Tvshow();
 
-		if (media != null) {
-			this.getItemBase(tvshow, media);
+        if (media != null) {
+            this.getItemBase(tvshow, media);
 
-			tvshow.setMediaid(media.tvshowid);
-			tvshow.setEpisode(media.episode);
-			tvshow.setSeason(media.season);
-		}
+            tvshow.setMediaid(media.tvshowid);
+            tvshow.setEpisode(media.episode);
+            tvshow.setSeason(media.season);
+        }
 
-		return tvshow;
-	}
+        return tvshow;
+    }
 
-	/**
-	 * Convert {@link EpisodeDetail} to {@link Media}.
-	 * @param media {@link EpisodeDetail} rpc
-	 * @return Get {@link Media} from {@link EpisodeDetail} rpc
-	 */
-	private Media getTvshowEpisode(EpisodeDetail media) {
-		Tvshow tvshow = new Tvshow();
+    /**
+     * Convert {@link EpisodeDetail} to {@link Media}.
+     * @param media {@link EpisodeDetail} rpc
+     * @return Get {@link Media} from {@link EpisodeDetail} rpc
+     */
+    private Media getTvshowEpisode(EpisodeDetail media) {
+        Tvshow tvshow = new Tvshow();
 
-		if (media != null) {
-			this.getItem(tvshow, media);
+        if (media != null) {
+            this.getItem(tvshow, media);
 
-			tvshow.setMediaid(media.episodeid);
-			tvshow.setEpisode(media.episode);
-			tvshow.setSeason(media.season);
-			tvshow.setTvshowid(media.tvshowid);
-			// video.setuniqueid = media["uniqueid"]
-			tvshow.setShowtitle(media.showtitle);
-			tvshow.setFirstaired(media.firstaired);
-			tvshow.setProductioncode(media.productioncode);
-			tvshow.setVotes(media.votes);
-			tvshow.setRating(media.rating);
-			tvshow.setWriter(media.writer);
-			tvshow.setOriginaltitle(media.originaltitle);
-		}
+            tvshow.setMediaid(media.episodeid);
+            tvshow.setEpisode(media.episode);
+            tvshow.setSeason(media.season);
+            tvshow.setTvshowid(media.tvshowid);
+            // video.setuniqueid = media["uniqueid"]
+            tvshow.setShowtitle(media.showtitle);
+            tvshow.setFirstaired(media.firstaired);
+            tvshow.setProductioncode(media.productioncode);
+            tvshow.setVotes(media.votes);
+            tvshow.setRating(media.rating);
+            tvshow.setWriter(media.writer);
+            tvshow.setOriginaltitle(media.originaltitle);
+        }
 
-		return tvshow;
-	}
+        return tvshow;
+    }
 
-	/**
+    /**
      * Convert {@link SongDetail} to {@link Media}.
      * @param media {@link SongDetail} rpc
      * @return Get {@link Media} from {@link SongDetail} rpc

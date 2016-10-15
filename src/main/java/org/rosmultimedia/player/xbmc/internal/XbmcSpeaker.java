@@ -15,11 +15,11 @@ import org.xbmc.android.jsonrpc.api.call.Application;
 import org.xbmc.android.jsonrpc.api.model.ApplicationModel.PropertyValue;
 import org.xbmc.android.jsonrpc.api.model.GlobalModel.Toggle;
 
-import smarthome_media_msgs.MediaAction;
-import smarthome_media_msgs.SpeakerInfo;
-import smarthome_media_msgs.StateData;
-import smarthome_media_msgs.ToggleMuteSpeakerRequest;
-import smarthome_media_msgs.ToggleMuteSpeakerResponse;
+import smarthome_media_msgs.msg.MediaAction;
+import smarthome_media_msgs.msg.SpeakerInfo;
+import smarthome_media_msgs.msg.StateData;
+import smarthome_media_msgs.srv.ToggleMuteSpeaker_Request;
+import smarthome_media_msgs.srv.ToggleMuteSpeaker_Response;
 
 /**
  * Xbmc Speaker module.
@@ -104,16 +104,17 @@ public class XbmcSpeaker implements ISpeaker {
     }
 
     @Override
-    public void handleSpeakerMuteToggle(ToggleMuteSpeakerRequest request,
-            ToggleMuteSpeakerResponse response) {
+    public void handleSpeakerMuteToggle(
+            ToggleMuteSpeaker_Request request,
+            ToggleMuteSpeaker_Response response) {
         response.setState(!this.xbmcNode.getStateData().getSpeaker().getMuted());
 
         this.xbmcNode.logI(String.format("Service call %s : %s",
                 XbmcNode.SRV_MUTE_SPEAKER_TOGGLE,
                 this.xbmcNode.getStateData().getSpeaker().getMuted()));
 
-        MediaAction message = this.xbmcNode.getConnectedNode().getTopicMessageFactory()
-                .newFromType(MediaAction._TYPE);
+        MediaAction message = new MediaAction(); //this.xbmcNode.getConnectedNode().getTopicMessageFactory()
+//                .newFromType(MediaAction._TYPE);
 
         message.setMethod(XbmcSpeaker.OP_MUTE_TOGGLE);
 

@@ -10,8 +10,8 @@ package org.rosmultimedia.player.xbmc.internal;
 
 import org.rosbuilding.common.media.IMonitor;
 
-import smarthome_media_msgs.MediaAction;
-import smarthome_media_msgs.StateData;
+import smarthome_media_msgs.msg.MediaAction;
+import smarthome_media_msgs.msg.StateData;
 
 
 /**
@@ -22,13 +22,13 @@ import smarthome_media_msgs.StateData;
  */
 public class XbmcMonitor implements IMonitor {
 
-	@Override
-	public void load(StateData stateData) {
+    @Override
+    public void load(StateData stateData) {
 
-	}
+    }
 
-	@Override
-	public void callbackCmdAction(MediaAction message, StateData stateData) {
+    @Override
+    public void callbackCmdAction(MediaAction message, StateData stateData) {
 
-	}
+    }
 }

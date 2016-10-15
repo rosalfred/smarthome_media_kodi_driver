@@ -10,7 +10,6 @@ package org.rosmultimedia.player.xbmc.internal;
 
 import java.util.List;
 
-import org.ros.message.Duration;
 import org.rosbuilding.common.media.IPlayer;
 import org.rosmultimedia.player.xbmc.XbmcNode;
 import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
@@ -28,10 +27,11 @@ import org.xbmc.android.jsonrpc.api.model.PlaylistModel;
 
 import com.google.common.base.Strings;
 
-import smarthome_media_msgs.MediaAction;
-import smarthome_media_msgs.MediaType;
-import smarthome_media_msgs.PlayerInfo;
-import smarthome_media_msgs.StateData;
+import builtin_interfaces.msg.Duration;
+import smarthome_media_msgs.msg.MediaAction;
+import smarthome_media_msgs.msg.MediaType;
+import smarthome_media_msgs.msg.PlayerInfo;
+import smarthome_media_msgs.msg.StateData;
 
 /**
  * Xbmc Player module.
@@ -236,11 +236,15 @@ public class XbmcPlayer implements IPlayer {
      * @param playerInfo {@link PlayerInfo} to update
      */
     private void resetInfo(PlayerInfo playerInfo) {
+        Duration duration = new Duration();
+        duration.setSec(0);
+        duration.setNanosec(0);
         playerInfo.setCanseek(false);
         playerInfo.setMediaid(-1);
+        playerInfo.setMediatype(new MediaType());
         playerInfo.getMediatype().setValue("");
-        playerInfo.setStamp(new Duration(0, 0));
-        playerInfo.setTotaltime(new Duration(0, 0));
+        playerInfo.setStamp(duration);
+        playerInfo.setTotaltime(duration);
         playerInfo.setSpeed(0);
         playerInfo.setSubtitleenabled(false);
         playerInfo.setFile("");
@@ -292,16 +296,19 @@ public class XbmcPlayer implements IPlayer {
         playerInfo.setCanseek(true);
 
         if (playerProperty != null) {
-            playerInfo.setStamp(new Duration(playerProperty.time.hours
-                    * 60 * 60 + playerProperty.time.minutes * 60
-                    + playerProperty.time.seconds,
-                    playerProperty.time.milliseconds * 100));
+            Duration currentDuration = new Duration();
+            currentDuration.setSec(playerProperty.time.hours * 60 * 60
+                    + playerProperty.time.minutes * 60
+                    + playerProperty.time.seconds);
+            currentDuration.setNanosec(playerProperty.time.milliseconds * 100);
+            playerInfo.setStamp(currentDuration);
 
-            playerInfo.setTotaltime(new Duration(
-                    playerProperty.totaltime.hours * 60 * 60
+            Duration totalDuration = new Duration();
+            totalDuration.setSec(playerProperty.totaltime.hours * 60 * 60
                     + playerProperty.totaltime.minutes * 60
-                    + playerProperty.totaltime.seconds,
-                    playerProperty.totaltime.milliseconds * 100));
+                    + playerProperty.totaltime.seconds);
+            totalDuration.setNanosec(playerProperty.totaltime.milliseconds * 100);
+            playerInfo.setTotaltime(totalDuration);
 
             playerInfo.setSpeed(playerProperty.speed);
             playerInfo.setCanseek(playerProperty.canseek);
