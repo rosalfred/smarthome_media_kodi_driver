@@ -17,7 +17,7 @@ import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.RMWRequestId;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.service.TriConsumer;
-import org.rosbuilding.common.BaseNodeMain;
+import org.rosbuilding.common.BaseDriverNode;
 import org.rosbuilding.common.media.MediaMessageConverter;
 import org.rosbuilding.common.media.MediaStateDataComparator;
 import org.rosmultimedia.player.xbmc.IXbmcNode;
@@ -51,7 +51,7 @@ import smarthome_media_msgs.srv.ToggleMuteSpeaker_Response;
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class XbmcNode extends BaseNodeMain<XbmcConfig, StateData, MediaAction> implements IXbmcNode {
+public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction> implements IXbmcNode {
 
     private static Logger logger = Logger.getLogger(RCLJava.LOG_NAME);
 
@@ -76,11 +76,6 @@ public class XbmcNode extends BaseNodeMain<XbmcConfig, StateData, MediaAction> i
     public void onStart(final Node connectedNode) {
         super.onStart(connectedNode);
         this.startFinal();
-    }
-
-    @Override
-    public void onShutdown(Node node) {
-        super.onShutdown(node);
     }
 
     @Override

@@ -9,6 +9,7 @@ targetCompatibility = 1.7
 
 //mainClassName = 'org.rosmultimedia.player.xbmc.XbmcNode'
 group = 'org.rosmultimedia.player'
+ament {generateEclipse=true}
 
 repositories {
      jcenter()
