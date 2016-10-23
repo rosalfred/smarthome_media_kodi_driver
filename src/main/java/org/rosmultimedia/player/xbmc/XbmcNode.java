@@ -51,9 +51,9 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
 
     private static Logger logger = Logger.getLogger(RCLJava.LOG_NAME);
 
-    public static final String SRV_MUTE_SPEAKER_TOGGLE = "speaker_mute_toggle";
-    public static final String SRV_MEDIA_GET_ITEM = "get_item";
-    public static final String SRV_MEDIA_GET_ITEMS = "get_items";
+    public static final String SRV_MUTE_SPEAKER_TOGGLE  = "speaker_mute_toggle";
+    public static final String SRV_MEDIA_GET_ITEM       = "get_item";
+    public static final String SRV_MEDIA_GET_ITEMS      = "get_items";
 
     private XbmcJson xbmcJson;
 
@@ -115,8 +115,8 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
     }
 
     @Override
-    protected void initServices() {
-        super.initServices();
+    protected void initTopics() {
+        super.initTopics();
 
         try {
             this.getConnectedNode().<ToggleMuteSpeaker>createService(ToggleMuteSpeaker.class,
@@ -127,6 +127,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
                                 final RMWRequestId header,
                                 final ToggleMuteSpeaker_Request request,
                                 final ToggleMuteSpeaker_Response response) {
+
                             XbmcNode.this.speaker.handleSpeakerMuteToggle(request, response);
                         }
                     });
@@ -139,6 +140,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
                                 final RMWRequestId header,
                                 final MediaGetItem_Request request,
                                 final MediaGetItem_Response response) {
+
                             XbmcNode.this.library.handleMediaGetItem(request, response);
                             logger.finest(response.getItem().getData());
                         }
@@ -152,6 +154,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
                                 final RMWRequestId header,
                                 final MediaGetItems_Request request,
                                 final MediaGetItems_Response response) {
+
                             XbmcNode.this.library.handleMediaGetItems(request, response);
                             for (MediaItem media : response.getItems()) {
                                 logger.finest(String.format("%s : %s ",
