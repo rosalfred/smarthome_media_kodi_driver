@@ -8,10 +8,7 @@
  */
 package org.rosmultimedia.player.xbmc;
 
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.RMWRequestId;
@@ -33,7 +30,6 @@ import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
 import smarthome_media_msgs.msg.MediaAction;
 import smarthome_media_msgs.msg.MediaItem;
-import smarthome_media_msgs.msg.MediaType;
 import smarthome_media_msgs.srv.MediaGetItem;
 import smarthome_media_msgs.srv.MediaGetItem_Request;
 import smarthome_media_msgs.srv.MediaGetItem_Response;
@@ -224,17 +220,17 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
     }
 
     public static void main(String[] args) throws InterruptedException {
-      logger.setLevel(Level.ALL);
-      ConsoleHandler handler = new ConsoleHandler();
-      handler.setFormatter(new SimpleFormatter());
-      logger.addHandler(handler);
-      handler.setLevel(Level.ALL);
+//      logger.setLevel(Level.ALL);
+//      ConsoleHandler handler = new ConsoleHandler();
+//      handler.setFormatter(new SimpleFormatter());
+//      logger.addHandler(handler);
+//      handler.setLevel(Level.ALL);
 
       // Initialize RCL
       RCLJava.rclJavaInit();
 
       // Let's create a Node
-      Node node = RCLJava.createNode("samsungtv");
+      Node node = RCLJava.createNode("kodi");
 
       XbmcNode samsung = new XbmcNode();
       samsung.onStart(node);
