@@ -8,12 +8,14 @@
  */
 package org.rosmultimedia.player.xbmc;
 
-import java.util.logging.Logger;
+import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
+import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.RMWRequestId;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.service.TriConsumer;
+
 import org.rosbuilding.common.BaseDriverNode;
 import org.rosbuilding.common.media.MediaMessageConverter;
 import org.rosbuilding.common.media.MediaStateDataComparator;
@@ -25,9 +27,8 @@ import org.rosmultimedia.player.xbmc.internal.XbmcPlayer;
 import org.rosmultimedia.player.xbmc.internal.XbmcSpeaker;
 import org.rosmultimedia.player.xbmc.internal.XbmcSystem;
 import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
-import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
-import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
+import smarthome_media_msgs.msg.StateData;
 import smarthome_media_msgs.msg.MediaAction;
 import smarthome_media_msgs.msg.MediaItem;
 import smarthome_media_msgs.srv.MediaGetItem;
@@ -36,7 +37,6 @@ import smarthome_media_msgs.srv.MediaGetItem_Response;
 import smarthome_media_msgs.srv.MediaGetItems;
 import smarthome_media_msgs.srv.MediaGetItems_Request;
 import smarthome_media_msgs.srv.MediaGetItems_Response;
-import smarthome_media_msgs.msg.StateData;
 import smarthome_media_msgs.srv.ToggleMuteSpeaker;
 import smarthome_media_msgs.srv.ToggleMuteSpeaker_Request;
 import smarthome_media_msgs.srv.ToggleMuteSpeaker_Response;
@@ -48,8 +48,6 @@ import smarthome_media_msgs.srv.ToggleMuteSpeaker_Response;
  *
  */
 public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction> implements IXbmcNode {
-
-    private static Logger logger = Logger.getLogger(RCLJava.LOG_NAME);
 
     public static final String SRV_MUTE_SPEAKER_TOGGLE  = "speaker_mute_toggle";
     public static final String SRV_MEDIA_GET_ITEM       = "get_item";
@@ -142,7 +140,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
                                 final MediaGetItem_Response response) {
 
                             XbmcNode.this.library.handleMediaGetItem(request, response);
-                            logger.finest(response.getItem().getData());
+                            logger.debug(response.getItem().getData());
                         }
                     });
 
@@ -157,7 +155,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
 
                             XbmcNode.this.library.handleMediaGetItems(request, response);
                             for (MediaItem media : response.getItems()) {
-                                logger.finest(String.format("%s : %s ",
+                                logger.debug(String.format("%s : %s ",
                                         media.getMediatype().getValue(),
                                         media.getData() ));
                             }
@@ -223,12 +221,6 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
     }
 
     public static void main(String[] args) throws InterruptedException {
-//      logger.setLevel(Level.ALL);
-//      ConsoleHandler handler = new ConsoleHandler();
-//      handler.setFormatter(new SimpleFormatter());
-//      logger.addHandler(handler);
-//      handler.setLevel(Level.ALL);
-
       // Initialize RCL
       RCLJava.rclJavaInit();
 
