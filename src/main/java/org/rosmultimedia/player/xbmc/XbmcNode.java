@@ -59,11 +59,11 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
     private XbmcSpeaker speaker;
 
     public XbmcNode() {
-        super("xbmc",
-                new MediaStateDataComparator(),
-                new MediaMessageConverter(),
-                MediaAction.class.getName(),
-                StateData.class.getName());
+        super(
+            new MediaStateDataComparator(),
+            new MediaMessageConverter(),
+            MediaAction.class.getName(),
+            StateData.class.getName());
     }
 
     @Override

@@ -25,7 +25,7 @@ public class XbmcConfig extends NodeDriverConnectedConfig {
                 "fixed_frame",
                 1,
                 "00:00:00:00:00:00",
-                "192.168.0.38",
+                "192.168.0.68",
                 8080L,
                 "xbmc",
                 "xbmc");
