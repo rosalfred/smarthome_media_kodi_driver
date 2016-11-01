@@ -349,17 +349,25 @@ public class XbmcPlayer implements IPlayer {
             if (uri.startsWith(IPlayer.URI_MEDIA_IMDB)) {
                 //Get mediaid from database with imdbid
 
-            } else if (uri.startsWith(IPlayer.URI_MEDIA_YOUTUBE)) {
+            } else
+
+            if (uri.startsWith(IPlayer.URI_MEDIA_YOUTUBE)) {
                 item = new PlaylistModel.Item(
-                        new PlaylistModel.Item.File(String.format(
-                                XBMC_PLUGIN_YOUTUBE_URL,
-                                uri.replace(IPlayer.URI_MEDIA_YOUTUBE, ""))));
-            } else if (msg.getType().equals(MediaType.VIDEO_MOVIE)) {
-                item = new PlaylistModel.Item(new PlaylistModel.Item.Movieid(
-                        Integer.parseInt(uri.replace(IPlayer.URI_MEDIA, ""))));
-            } else if (msg.getType().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
-                item = new PlaylistModel.Item(new PlaylistModel.Item.Episodeid(
-                        Integer.parseInt(uri.replace(IPlayer.URI_MEDIA, ""))));
+                        new PlaylistModel.Item.File(
+                                String.format(XBMC_PLUGIN_YOUTUBE_URL,
+                                        uri.replace(IPlayer.URI_MEDIA_YOUTUBE, ""))));
+            } else
+
+            if (msg.getType().equals(MediaType.VIDEO_MOVIE)) {
+                item = new PlaylistModel.Item(
+                        new PlaylistModel.Item.Movieid(
+                                Integer.parseInt(uri.replace(IPlayer.URI_MEDIA, ""))));
+            } else
+
+            if (msg.getType().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
+                item = new PlaylistModel.Item(
+                        new PlaylistModel.Item.Episodeid(
+                                Integer.parseInt(uri.replace(IPlayer.URI_MEDIA, ""))));
             }
         }
 

@@ -12,9 +12,9 @@ import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
 import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
 import org.ros2.rcljava.RCLJava;
-import org.ros2.rcljava.RMWRequestId;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.service.TriConsumer;
+import org.ros2.rcljava.node.service.RMWRequestId;
 
 import org.rosbuilding.common.BaseDriverNode;
 import org.rosbuilding.common.media.MediaMessageConverter;
