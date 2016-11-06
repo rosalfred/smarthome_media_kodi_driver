@@ -211,7 +211,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
     }
 
     @Override
-    protected XbmcConfig getConfig() {
+    protected XbmcConfig makeConfiguration() {
         return new XbmcConfig(this.getConnectedNode());
     }
 
