@@ -12,6 +12,7 @@ import org.xbmc.android.jsonrpc.api.call.JSONRPC.Ping;
 import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.service.TriConsumer;
 import org.ros2.rcljava.node.service.RMWRequestId;
@@ -49,9 +50,9 @@ import smarthome_media_msgs.srv.ToggleMuteSpeaker_Response;
  */
 public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction> implements IXbmcNode {
 
-    public static final String SRV_MUTE_SPEAKER_TOGGLE  = "speaker_mute_toggle";
-    public static final String SRV_MEDIA_GET_ITEM       = "get_item";
-    public static final String SRV_MEDIA_GET_ITEMS      = "get_items";
+    public static final String SRV_MUTE_SPEAKER_TOGGLE  = "~/speaker_mute_toggle";
+    public static final String SRV_MEDIA_GET_ITEM       = "~/get_item";
+    public static final String SRV_MEDIA_GET_ITEMS      = "~/get_items";
 
     private XbmcJson xbmcJson;
 
@@ -118,7 +119,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
 
         try {
             this.getConnectedNode().<ToggleMuteSpeaker>createService(ToggleMuteSpeaker.class,
-                    this.configuration.getPrefix() + SRV_MUTE_SPEAKER_TOGGLE,
+                    GraphName.getFullName(this.connectedNode, SRV_MUTE_SPEAKER_TOGGLE, null),
                     new TriConsumer<RMWRequestId, ToggleMuteSpeaker_Request, ToggleMuteSpeaker_Response>() {
                         @Override
                         public void accept(
@@ -131,7 +132,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
                     });
 
             this.getConnectedNode().<MediaGetItem>createService(MediaGetItem.class,
-                    this.configuration.getPrefix() + SRV_MEDIA_GET_ITEM,
+                    GraphName.getFullName(this.connectedNode, SRV_MEDIA_GET_ITEM, null),
                     new TriConsumer<RMWRequestId, MediaGetItem_Request, MediaGetItem_Response>() {
                         @Override
                         public void accept(
@@ -145,7 +146,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
                     });
 
             this.getConnectedNode().<MediaGetItems>createService(MediaGetItems.class,
-                    this.configuration.getPrefix() + SRV_MEDIA_GET_ITEMS,
+                    GraphName.getFullName(this.connectedNode, SRV_MEDIA_GET_ITEMS, null),
                     new TriConsumer<RMWRequestId, MediaGetItems_Request, MediaGetItems_Response>() {
                         @Override
                         public void accept(
@@ -225,7 +226,7 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
       RCLJava.rclJavaInit();
 
       // Let's create a Node
-      Node node = RCLJava.createNode("kodi");
+      Node node = RCLJava.createNode("/home/salon", "kodi");
 
       XbmcNode samsung = new XbmcNode();
       samsung.onStart(node);

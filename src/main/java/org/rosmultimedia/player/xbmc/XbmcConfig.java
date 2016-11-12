@@ -21,7 +21,8 @@ public class XbmcConfig extends NodeDriverConnectedConfig {
     public XbmcConfig(Node connectedNode) {
         super(
                 connectedNode,
-                "/home/salon/xbmc/",
+                "/home/salon",
+                "xbmc",
                 "fixed_frame",
                 1,
                 "00:00:00:00:00:00",
