@@ -1,5 +1,5 @@
 plugins {
-    id "org.ros2.rcljava" version "0.2.0"
+    id "org.ros2.rcljava" version "0.3.3"
 }
 
 apply plugin: 'org.ros2.rcljava'
@@ -7,9 +7,7 @@ apply plugin: 'org.ros2.rcljava'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-//mainClassName = 'org.rosmultimedia.player.xbmc.XbmcNode'
 group = 'org.rosmultimedia.player'
-ament {generateEclipse=true}
 
 repositories {
      jcenter()
@@ -24,15 +22,13 @@ dependencies {
     runtime fileTree(dir: 'libs', include: '*.jar')
 }
 
-task copyLib(type: Copy) {
-
-    from(configurations.testRuntime)
-        into([project.getProperty('ament.install_space'), 'lib', 'java'].join(File.separator))
-
-    from(configurations.runtime)
-        into([project.getProperty('ament.install_space'), 'lib', 'java'].join(File.separator))
-
-    from("lib")
-        into([project.getProperty('ament.install_space'), 'lib', 'java'].join(File.separator))
+ament {
+    generateEclipse = true
+    
+    scripts {
+        main {
+            applicationName = project.name
+            mainClassName = 'org.rosmultimedia.player.xbmc.XbmcNode'
+        }
+    }
 }
-assemble.dependsOn copyLib
