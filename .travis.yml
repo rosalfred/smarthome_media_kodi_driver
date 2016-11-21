@@ -13,7 +13,6 @@ env:
 cache:
   directories:
     - $ANDROID_HOME
-    - $ANDROID_NDK
 
 before_install:
 - docker pull theosakamg7/ros2java:latest
@@ -31,7 +30,7 @@ before_install:
 - cd $ROS2WS
 - docker run -u "$UID" -it --rm -v `pwd`:`pwd` -w `pwd` theosakamg7/ros2java:latest sh -c "/usr/bin/wget https://gist.githubusercontent.com/Theosakamg/51f3e8670784db13d9190c58e3e57eb2/raw/ros2_alfred.repos"
 - docker run -u "$UID" -it --rm -v `pwd`:`pwd` -w `pwd` theosakamg7/ros2java:latest sh -c "/usr/bin/vcs import src < ros2_alfred.repos"
-- #rm -rf $ROS2WS/src/rosalfred/xxxxx && ln -s $HOME_BUILD/xxx/xxxx $ROS2WS/src/rosalfred/xxxx
+- rm -rf $ROS2WS/src/rosalfred/smarthome_media_kodi_driver && ln -s $HOME_BUILD/rosalfred/smarthome_media_kodi_driver $ROS2WS/src/rosalfred/smarthome_media_kodi_driver
 - echo "BUILD ROS2 WS..."
 - cd $HOME_BUILD && ls -lFa ./ && find . -maxdepth 3 -type d -not \( -path "./.git" -prune \)
 - docker run -u "$UID" -it --rm -v `pwd`:`pwd` -w `pwd` theosakamg7/ros2java:latest sh -c ". ament_ws/install_isolated/local_setup.sh && cd $ROS2WS && ament build --symlink-install --isolated"
