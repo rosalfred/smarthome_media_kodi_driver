@@ -97,18 +97,24 @@ public class XbmcLibrary implements ILibrary {
         }
 
         Media media = null;
-
         if (mediaId < 0) {
             mediaId = 0;
         }
 
+        // Movie
         if (mediaType.getValue().equals(MediaType.VIDEO_MOVIE)) {
             media = this.getMovie(mediaId);
-        } else if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
+        } else
+        // TV Show
+        if (mediaType.getValue().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
             media = this.getTvshowEpisode(mediaId);
-        } else if (mediaType.getValue().equals(MediaType.AUDIO_SONG)) {
+        } else
+        // Audio song
+        if (mediaType.getValue().equals(MediaType.AUDIO_SONG)) {
             media = this.getAudioSong(mediaId);
-        } else if (mediaType.getValue().equals(MediaType.AUDIO_ALBUM)) {
+        } else
+        // Audio album
+        if (mediaType.getValue().equals(MediaType.AUDIO_ALBUM)) {
             media = this.getAudioAlbum(mediaId);
         }
 
@@ -117,13 +123,10 @@ public class XbmcLibrary implements ILibrary {
             media = new Media();
         }
 
-        MediaItem result = new MediaItem(); //this.xbmcNode.getNewMessageInstance(MediaItem._TYPE);
-
+        MediaItem result = response.getItem();
         result.setMediaid(media.getMediaid());
         result.setMediatype(mediaType);
         result.setData(media.toJson());
-
-        response.setItem(result);
     }
 
     @Override
