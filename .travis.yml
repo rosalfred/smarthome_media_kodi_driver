@@ -37,6 +37,7 @@ before_install:
 
 script:
 - cd $HOME_BUILD && docker run -u "$UID" -it --rm -v `pwd`:`pwd` -w `pwd` theosakamg7/ros2java:latest sh -c ". ament_ws/install_isolated/local_setup.sh && cd $ROS2WS && ament test --isolated --only smarthome_media_kodi_driver"
+- cd $HOME_BUILD && docker run -u "$UID" -it --rm -v `pwd`:`pwd` -w `pwd` theosakamg7/ros2java:latest sh -c ". ros2_java_ws/install_isolated/local_setup.sh && timeout 10 smarthome_media_kodi_driver"
 
 after_success:
   - coveralls
