@@ -14,7 +14,7 @@ import org.xbmc.android.jsonrpc.api.call.JSONRPC.Version;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
-import org.ros2.rcljava.node.service.TriConsumer;
+import org.ros2.rcljava.node.service.ServiceCallback;
 import org.ros2.rcljava.node.service.RMWRequestId;
 
 import org.rosbuilding.common.BaseDriverNode;
@@ -120,9 +120,9 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
         try {
             this.getConnectedNode().<ToggleMuteSpeaker>createService(ToggleMuteSpeaker.class,
                     GraphName.getFullName(this.connectedNode, SRV_MUTE_SPEAKER_TOGGLE, null),
-                    new TriConsumer<RMWRequestId, ToggleMuteSpeaker_Request, ToggleMuteSpeaker_Response>() {
+                    new ServiceCallback<ToggleMuteSpeaker_Request, ToggleMuteSpeaker_Response>() {
                         @Override
-                        public void accept(
+                        public void dispatch(
                                 final RMWRequestId header,
                                 final ToggleMuteSpeaker_Request request,
                                 final ToggleMuteSpeaker_Response response) {
@@ -133,9 +133,9 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
 
             this.getConnectedNode().<MediaGetItem>createService(MediaGetItem.class,
                     GraphName.getFullName(this.connectedNode, SRV_MEDIA_GET_ITEM, null),
-                    new TriConsumer<RMWRequestId, MediaGetItem_Request, MediaGetItem_Response>() {
+                    new ServiceCallback<MediaGetItem_Request, MediaGetItem_Response>() {
                         @Override
-                        public void accept(
+                        public void dispatch(
                                 final RMWRequestId header,
                                 final MediaGetItem_Request request,
                                 final MediaGetItem_Response response) {
@@ -147,9 +147,9 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
 
             this.getConnectedNode().<MediaGetItems>createService(MediaGetItems.class,
                     GraphName.getFullName(this.connectedNode, SRV_MEDIA_GET_ITEMS, null),
-                    new TriConsumer<RMWRequestId, MediaGetItems_Request, MediaGetItems_Response>() {
+                    new ServiceCallback<MediaGetItems_Request, MediaGetItems_Response>() {
                         @Override
-                        public void accept(
+                        public void dispatch(
                                 final RMWRequestId header,
                                 final MediaGetItems_Request request,
                                 final MediaGetItems_Response response) {
