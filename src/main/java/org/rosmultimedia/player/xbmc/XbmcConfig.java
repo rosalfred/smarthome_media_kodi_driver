@@ -13,8 +13,8 @@ import org.rosbuilding.common.NodeDriverConnectedConfig;
 
 /**
  *
+ * @author Mickael Gaillard <mick.gaillard@gmail.com>
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
- *
  */
 public class XbmcConfig extends NodeDriverConnectedConfig {
 

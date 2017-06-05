@@ -28,6 +28,8 @@ import org.rosmultimedia.player.xbmc.internal.XbmcPlayer;
 import org.rosmultimedia.player.xbmc.internal.XbmcSpeaker;
 import org.rosmultimedia.player.xbmc.internal.XbmcSystem;
 import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import smarthome_media_msgs.msg.StateData;
 import smarthome_media_msgs.msg.MediaAction;
@@ -45,14 +47,16 @@ import smarthome_media_msgs.srv.ToggleMuteSpeaker_Response;
 /**
  * Xbmc ROS Node.
  *
+ * @author Mickael Gaillard <mick.gaillard@gmail.com>
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
- *
  */
 public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction> implements IXbmcNode {
 
     public static final String SRV_MUTE_SPEAKER_TOGGLE  = "~/speaker_mute_toggle";
     public static final String SRV_MEDIA_GET_ITEM       = "~/get_item";
     public static final String SRV_MEDIA_GET_ITEMS      = "~/get_items";
+
+    private static final Logger logger = LoggerFactory.getLogger(XbmcNode.class);
 
     private XbmcJson xbmcJson;
 
@@ -65,12 +69,6 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
             new MediaMessageConverter(),
             MediaAction.class.getName(),
             StateData.class.getName());
-    }
-
-    @Override
-    public void onStart(final Node connectedNode) {
-        super.onStart(connectedNode);
-        this.startFinal();
     }
 
     @Override
@@ -222,19 +220,19 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
     }
 
     public static void main(String[] args) throws InterruptedException {
-      // Initialize RCL
-      RCLJava.rclJavaInit();
+        RCLJava.rclJavaInit();
 
-      // Let's create a Node
-      Node node = RCLJava.createNode("/home/salon", "kodi");
+        final XbmcNode samsung = new XbmcNode();
+        final Node node = RCLJava.createNode("kodi");
 
-      XbmcNode samsung = new XbmcNode();
-      samsung.onStart(node);
+        samsung.onStart(node);
+        samsung.onStarted();
 
-      RCLJava.spin(node);
+        RCLJava.spin(node);
 
-      samsung.onShutdown(node);
-      node.dispose();
-      RCLJava.shutdown();
-  }
+        samsung.onShutdown();
+        samsung.onShutdowned();
+
+        RCLJava.shutdown();
+    }
 }
