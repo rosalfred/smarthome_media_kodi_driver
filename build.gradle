@@ -20,6 +20,8 @@ dependencies {
 
     compile project('xbmc_jsonrpc')
 
+    testCompile 'junit:junit:4.+'
+
     runtime fileTree(dir: 'libs', include: '*.jar')
 }
 
