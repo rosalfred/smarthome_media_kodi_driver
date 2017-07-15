@@ -8,7 +8,9 @@
  */
 package org.rosmultimedia.player.xbmc.internal;
 
-import org.rosbuilding.common.media.IMonitor;
+import java.util.List;
+
+import org.rosbuilding.common.media.Monitor;
 
 import smarthome_media_msgs.msg.MediaAction;
 import smarthome_media_msgs.msg.StateData;
@@ -20,7 +22,7 @@ import smarthome_media_msgs.msg.StateData;
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class XbmcMonitor implements IMonitor {
+public class XbmcMonitor extends Monitor {
 
     @Override
     public void load(StateData stateData) {
@@ -29,6 +31,11 @@ public class XbmcMonitor implements IMonitor {
 
     @Override
     public void callbackCmdAction(MediaAction message, StateData stateData) {
+
+    }
+
+    @Override
+    protected void initializeAvailableMethods(List<String> availableMethods) {
 
     }
 }

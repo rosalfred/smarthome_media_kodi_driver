@@ -10,7 +10,6 @@ package org.rosmultimedia.player.xbmc.internal;
 
 import java.util.List;
 
-import org.rosbuilding.common.media.IPlayer;
 import org.rosmultimedia.player.xbmc.XbmcNode;
 import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
 import org.xbmc.android.jsonrpc.api.call.GUI;
@@ -39,7 +38,7 @@ import smarthome_media_msgs.msg.StateData;
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class XbmcPlayer implements IPlayer {
+public class XbmcPlayer extends org.rosbuilding.common.media.Player {
     private static final String XBMC_PLUGIN_YOUTUBE_URL =
             "plugin://plugin.video.youtube/?action=play_video&videoid=%s";
 
@@ -79,6 +78,38 @@ public class XbmcPlayer implements IPlayer {
             GetActivePlayersResult player = players.get(0);
             this.updateInfo(playerInfo, player.playerid);
         }
+    }
+
+    @Override
+    protected void initializeAvailableMethods(List<String> availableMethods) {
+        availableMethods.add(OP_PAUSE);
+        availableMethods.add(OP_PLAY);
+        availableMethods.add(OP_PLAYPAUSE);
+        availableMethods.add(OP_STOP);
+        availableMethods.add(OP_SPEED);
+        availableMethods.add(OP_SPEED_UP);
+        availableMethods.add(OP_SPEED_DOWN);
+        availableMethods.add(OP_OPEN);
+        availableMethods.add(OP_SEEK);
+        availableMethods.add(OP_NEXT);
+        availableMethods.add(OP_PREVIOUS);
+        availableMethods.add(OP_ADD_PLAYLIST);
+        availableMethods.add(OP_INS_PLAYLIST);
+        availableMethods.add(OP_REM_PLAYLIST);
+        availableMethods.add(OP_CLR_PLAYLIST);
+        availableMethods.add(OP_REM_PLAYLIST);
+        availableMethods.add(OP_BACK);
+        availableMethods.add(OP_HOME);
+        availableMethods.add(OP_INFO);
+        availableMethods.add(OP_DISPLAY);
+        availableMethods.add(OP_SELECT);
+        availableMethods.add(OP_DISPLAY);
+        availableMethods.add(OP_CONTEXT);
+        availableMethods.add(OP_UP);
+        availableMethods.add(OP_DOWN);
+        availableMethods.add(OP_LEFT);
+        availableMethods.add(OP_RIGHT);
+        availableMethods.add(OP_TXT);
     }
 
     @Override
@@ -346,28 +377,28 @@ public class XbmcPlayer implements IPlayer {
         String uri = msg.getUri();
 
         if (!Strings.isNullOrEmpty(uri)) {
-            if (uri.startsWith(IPlayer.URI_MEDIA_IMDB)) {
+            if (uri.startsWith(org.rosbuilding.common.media.Player.URI_MEDIA_IMDB)) {
                 //Get mediaid from database with imdbid
 
             } else
 
-            if (uri.startsWith(IPlayer.URI_MEDIA_YOUTUBE)) {
+            if (uri.startsWith(org.rosbuilding.common.media.Player.URI_MEDIA_YOUTUBE)) {
                 item = new PlaylistModel.Item(
                         new PlaylistModel.Item.File(
                                 String.format(XBMC_PLUGIN_YOUTUBE_URL,
-                                        uri.replace(IPlayer.URI_MEDIA_YOUTUBE, ""))));
+                                        uri.replace(org.rosbuilding.common.media.Player.URI_MEDIA_YOUTUBE, ""))));
             } else
 
             if (msg.getType().equals(MediaType.VIDEO_MOVIE)) {
                 item = new PlaylistModel.Item(
                         new PlaylistModel.Item.Movieid(
-                                Integer.parseInt(uri.replace(IPlayer.URI_MEDIA, ""))));
+                                Integer.parseInt(uri.replace(org.rosbuilding.common.media.Player.URI_MEDIA, ""))));
             } else
 
             if (msg.getType().equals(MediaType.VIDEO_TVSHOW_EPISODE)) {
                 item = new PlaylistModel.Item(
                         new PlaylistModel.Item.Episodeid(
-                                Integer.parseInt(uri.replace(IPlayer.URI_MEDIA, ""))));
+                                Integer.parseInt(uri.replace(org.rosbuilding.common.media.Player.URI_MEDIA, ""))));
             }
         }
 

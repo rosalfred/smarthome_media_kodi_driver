@@ -8,7 +8,8 @@
  */
 package org.rosmultimedia.player.xbmc.internal;
 
-import org.rosbuilding.common.ISystem;
+import java.util.List;
+
 import org.rosmultimedia.player.xbmc.XbmcNode;
 import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
 import org.xbmc.android.jsonrpc.api.call.System;
@@ -23,7 +24,7 @@ import smarthome_media_msgs.msg.StateData;
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class XbmcSystem implements ISystem<StateData, MediaAction> {
+public class XbmcSystem extends org.rosbuilding.common.System<StateData, MediaAction> {
     /**
      * Xbmc node.
      */
@@ -45,6 +46,12 @@ public class XbmcSystem implements ISystem<StateData, MediaAction> {
     }
 
     @Override
+    protected void initializeAvailableMethods(List<String> availableMethods) {
+        availableMethods.add(OP_POWER);
+        availableMethods.add(OP_SHUTDOWN);
+    }
+
+    @Override
     public void load(StateData stateData) {
 
     }
@@ -62,5 +69,4 @@ public class XbmcSystem implements ISystem<StateData, MediaAction> {
 
         }
     }
-
 }

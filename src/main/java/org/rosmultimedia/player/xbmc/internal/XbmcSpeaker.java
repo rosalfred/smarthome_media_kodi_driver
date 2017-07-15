@@ -8,7 +8,9 @@
  */
 package org.rosmultimedia.player.xbmc.internal;
 
-import org.rosbuilding.common.media.ISpeaker;
+import java.util.List;
+
+import org.rosbuilding.common.media.Speaker;
 import org.rosmultimedia.player.xbmc.XbmcNode;
 import org.rosmultimedia.player.xbmc.jsonrpc.XbmcJson;
 import org.xbmc.android.jsonrpc.api.call.Application;
@@ -27,7 +29,7 @@ import smarthome_media_msgs.srv.ToggleMuteSpeaker_Response;
  * @author Erwan Le Huitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class XbmcSpeaker implements ISpeaker {
+public class XbmcSpeaker extends Speaker {
     /**
      * Xbmc node.
      */
@@ -46,6 +48,15 @@ public class XbmcSpeaker implements ISpeaker {
     public XbmcSpeaker(XbmcJson xbmcjson, XbmcNode xbmcNode) {
         this.xbmcJson = xbmcjson;
         this.xbmcNode = xbmcNode;
+    }
+
+    @Override
+    protected void initializeAvailableMethods(List<String> availableMethods) {
+        availableMethods.add(OP_MUTE);
+        availableMethods.add(OP_MUTE_TOGGLE);
+        availableMethods.add(OP_VOLUME_DOWN);
+        availableMethods.add(OP_VOLUME_UP);
+        availableMethods.add(OP_VOLUME_TO);
     }
 
     @Override

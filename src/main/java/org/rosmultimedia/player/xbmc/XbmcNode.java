@@ -222,16 +222,16 @@ public class XbmcNode extends BaseDriverNode<XbmcConfig, StateData, MediaAction>
     public static void main(String[] args) throws InterruptedException {
         RCLJava.rclJavaInit();
 
-        final XbmcNode samsung = new XbmcNode();
+        final XbmcNode xbmc = new XbmcNode();
         final Node node = RCLJava.createNode("kodi");
 
-        samsung.onStart(node);
-        samsung.onStarted();
+        xbmc.onStart(node);
+        xbmc.onStarted();
 
         RCLJava.spin(node);
 
-        samsung.onShutdown();
-        samsung.onShutdowned();
+        xbmc.onShutdown();
+        xbmc.onShutdowned();
 
         RCLJava.shutdown();
     }
