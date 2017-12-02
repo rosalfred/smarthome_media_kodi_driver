@@ -3,7 +3,7 @@
 
 <package format="3">
   <name>smarthome_media_kodi_driver</name>
-  <version>0.2.0</version>
+  <version>2.0.0</version>
   <description>This package is for interfacing Kodi (by Rest API) to ROS. This package is part of Alfred Assistant stack.</description>
 
   <maintainer email="mick.gaillard@gmail.com">Mickael Gaillard</maintainer>
